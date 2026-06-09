@@ -1,0 +1,115 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: painel_db
+    environment:
+      POSTGRES_DB: paineldb
+      POSTGRES_USER: paineluser
+      POSTGRES_PASSWORD: painelpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U paineluser -d paineldb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+  redis:
+    image: redis:7-alpine
+    container_name: painel_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.9
+    container_name: painel_meili
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=${MEILI_MASTER_KEY:-masterKey123}
+      - MEILI_ENV=development
+    volumes:
+      - meilidata:/meili_data
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+  api:
+    build:
+      context: ./src/api
+      dockerfile: PainelObrigacoes.Api/Dockerfile
+    container_name: painel_api
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=paineldb;Username=paineluser;Password=painelpass
+      - ConnectionStrings__Redis=redis:6379,abortConnect=false
+      - Meilisearch__Url=http://meilisearch:7700
+      - Meilisearch__MasterKey=${MEILI_MASTER_KEY:-masterKey123}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      meilisearch:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "--silent", "--fail", "http://localhost:8080/swagger/v1/swagger.json"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  web:
+    build:
+      context: ./src/web
+      dockerfile: Dockerfile
+    container_name: painel_web
+    ports:
+      - "3000:80"
+      - "3001:443"
+    depends_on:
+      - api
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+volumes:
+  pgdata:
+  meilidata:
