@@ -5,17 +5,21 @@ using PainelObrigacoes.Domain.Dashboard.Queries;
 using PainelObrigacoes.Domain.Dashboard.QueryHandlers;
 using PainelObrigacoes.Domain.Enums;
 using PainelObrigacoes.Domain.Obrigacoes.Repositories;
+using PainelObrigacoes.Domain.Shared.Interfaces;
 
 namespace PainelObrigacoes.Tests.Domain.Dashboard;
 
 public class GetDashboardQueryHandlerTests
 {
     private readonly Mock<IObrigacaoRepository> _repositoryMock = new();
+    private readonly Mock<IDateTimeProvider> _clockMock = new();
     private readonly GetDashboardQueryHandler _handler;
 
     public GetDashboardQueryHandlerTests()
     {
-        _handler = new GetDashboardQueryHandler(_repositoryMock.Object);
+        _clockMock.Setup(c => c.CurrentYear).Returns(2026);
+        _clockMock.Setup(c => c.CurrentMonth).Returns(6);
+        _handler = new GetDashboardQueryHandler(_repositoryMock.Object, _clockMock.Object);
     }
 
     [Fact]
@@ -30,8 +34,7 @@ public class GetDashboardQueryHandlerTests
             Atrasadas = 10
         };
 
-        var agora = DateTime.UtcNow;
-        _repositoryMock.Setup(r => r.GetDashboardCountsAsync(agora.Year, agora.Month)).ReturnsAsync(dashboard);
+        _repositoryMock.Setup(r => r.GetDashboardCountsAsync(2026, 6)).ReturnsAsync(dashboard);
 
         var result = await _handler.Handle(new GetDashboardQuery(), CancellationToken.None);
 
@@ -46,8 +49,7 @@ public class GetDashboardQueryHandlerTests
     [Fact]
     public async Task Handle_QuandoSemDados_DeveRetornarDashboardZerado()
     {
-        var agora = DateTime.UtcNow;
-        _repositoryMock.Setup(r => r.GetDashboardCountsAsync(agora.Year, agora.Month))
+        _repositoryMock.Setup(r => r.GetDashboardCountsAsync(2026, 6))
             .ReturnsAsync(new DashboardModel());
 
         var result = await _handler.Handle(new GetDashboardQuery(), CancellationToken.None);

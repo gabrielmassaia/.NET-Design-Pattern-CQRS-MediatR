@@ -9,6 +9,7 @@ using PainelObrigacoes.Domain.Empresas.CommandHandlers;
 using PainelObrigacoes.Domain.Obrigacoes.Repositories;
 using PainelObrigacoes.Domain.Obrigacoes.Services;
 using PainelObrigacoes.Domain.Shared.Interfaces;
+using PainelObrigacoes.Domain.Obrigacoes.Models;
 using Xunit;
 
 namespace PainelObrigacoes.Tests.Domain.Engine;
@@ -246,8 +247,12 @@ public class TributaryRulesEngineTests
         engine.Setup(e => e.GenerateAnoCompleto(It.IsAny<EmpresaModel>(), It.IsAny<int>()))
               .Returns([]);
 
+        var clock = new Mock<IDateTimeProvider>();
+        clock.Setup(c => c.CurrentYear).Returns(2024);
+        clock.Setup(c => c.CurrentMonth).Returns(1);
+
         var handler = new CreateEmpresaCommandHandler(
-            unitOfWork.Object, empresaRepo.Object, obrigacaoRepo.Object, engine.Object, mediator.Object);
+            unitOfWork.Object, empresaRepo.Object, obrigacaoRepo.Object, engine.Object, mediator.Object, clock.Object);
 
         var result = await handler.Handle(new CreateEmpresaCommand
         {
@@ -269,11 +274,12 @@ public class TributaryRulesEngineTests
         var obrigacaoRepo = new Mock<IObrigacaoRepository>();
         var engine        = new Mock<ITributaryRulesEngine>();
         var mediator      = new Mock<IMediator>();
+        var clock         = new Mock<IDateTimeProvider>();
 
         empresaRepo.Setup(r => r.ExistsByCnpjAsync(It.IsAny<string>())).ReturnsAsync(true);
 
         var handler = new CreateEmpresaCommandHandler(
-            unitOfWork.Object, empresaRepo.Object, obrigacaoRepo.Object, engine.Object, mediator.Object);
+            unitOfWork.Object, empresaRepo.Object, obrigacaoRepo.Object, engine.Object, mediator.Object, clock.Object);
 
         var act = async () => await handler.Handle(new CreateEmpresaCommand
         {

@@ -33,7 +33,7 @@ public class CachedDashboardAppServiceTests
         var result = await _service.GetDashboardAsync();
 
         result.TotalEmpresas.Should().Be(10);
-        _innerMock.Verify(i => i.GetDashboardAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _innerMock.Verify(i => i.GetDashboardAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class CachedDashboardAppServiceTests
 
         _cacheMock.Setup(c => c.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((byte[]?)null);
-        _innerMock.Setup(i => i.GetDashboardAsync(It.IsAny<CancellationToken>())).ReturnsAsync(expected);
+        _innerMock.Setup(i => i.GetDashboardAsync(It.IsAny<int?>(), It.IsAny<int?>(), It.IsAny<CancellationToken>())).ReturnsAsync(expected);
 
         var result = await _service.GetDashboardAsync();
 
