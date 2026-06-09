@@ -11,6 +11,7 @@
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
     <PackageReference Include="FluentAssertions" Version="6.*" />
     <PackageReference Include="FluentValidation" Version="11.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.*" />
     <PackageReference Include="xunit" Version="2.9.2" />
@@ -25,6 +26,8 @@
     <ProjectReference Include="..\PainelObrigacoes.Domain\PainelObrigacoes.Domain.csproj" />
     <ProjectReference Include="..\PainelObrigacoes.Application\PainelObrigacoes.Application.csproj" />
     <ProjectReference Include="..\PainelObrigacoes.Infrastructure.Data\PainelObrigacoes.Infrastructure.Data.csproj" />
+    <ProjectReference Include="..\PainelObrigacoes.Infrastructure.Services\PainelObrigacoes.Infrastructure.Services.csproj" />
+    <ProjectReference Include="..\PainelObrigacoes.Api\PainelObrigacoes.Api.csproj" />
   </ItemGroup>
 
 </Project>
