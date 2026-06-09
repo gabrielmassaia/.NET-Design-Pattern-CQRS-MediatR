@@ -1,4 +1,4 @@
-import { renderWithProviders, screen, waitFor } from '@/test/render';
+import { renderWithProviders, screen, userEvent, waitFor } from '@/test/render';
 import EmpresasPage from './EmpresasPage';
 
 describe('EmpresasPage', () => {
@@ -20,12 +20,12 @@ describe('EmpresasPage', () => {
 
   it('renders company list from API', async () => {
     renderWithProviders(<EmpresasPage />);
-    expect(await screen.findByText('Empresa Exemplo Ltda', {}, { timeout: 5000 })).toBeInTheDocument();
-    expect(await screen.findByText('Comércio Brasil S.A.', {}, { timeout: 5000 })).toBeInTheDocument();
+    expect(await screen.findByText('Empresa Exemplo Ltda')).toBeInTheDocument();
+    expect(await screen.findByText('Comércio Brasil S.A.')).toBeInTheDocument();
   });
 
   it('opens modal on new company click', async () => {
-    const user = (await import('@/test/render')).userEvent.setup();
+    const user = userEvent.setup();
     renderWithProviders(<EmpresasPage />);
 
     const btns = await screen.findAllByText('Nova Empresa');
@@ -34,5 +34,23 @@ describe('EmpresasPage', () => {
     await waitFor(() => {
       expect(screen.getByPlaceholderText('00.000.000/0000-00')).toBeInTheDocument();
     });
+  });
+
+  it('renders delete button for each company', async () => {
+    renderWithProviders(<EmpresasPage />);
+    const deleteButtons = await screen.findAllByLabelText('delete');
+    expect(deleteButtons.length).toBeGreaterThan(0);
+  });
+
+  it('renders regime badge for each company', async () => {
+    renderWithProviders(<EmpresasPage />);
+    expect(await screen.findByText('Simples Nacional')).toBeInTheDocument();
+    expect(await screen.findByText('Lucro Presumido')).toBeInTheDocument();
+  });
+
+  it('renders company CNPJs formatted', async () => {
+    renderWithProviders(<EmpresasPage />);
+    const cnpjElements = await screen.findAllByText(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/);
+    expect(cnpjElements.length).toBeGreaterThan(0);
   });
 });

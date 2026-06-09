@@ -1,4 +1,4 @@
-import { renderWithProviders, screen, userEvent } from '@/test/render';
+import { renderWithProviders, screen, userEvent, waitFor } from '@/test/render';
 import { EmpresaForm } from './EmpresaForm';
 
 describe('EmpresaForm', () => {
@@ -22,5 +22,60 @@ describe('EmpresaForm', () => {
     renderWithProviders(<EmpresaForm open onClose={onClose} />);
     await user.click(screen.getByText('Cancelar'));
     expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it('shows CNPJ mask on typing', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<EmpresaForm open onClose={vi.fn()} />);
+
+    const cnpjInput = screen.getByPlaceholderText('00.000.000/0000-00');
+    await user.type(cnpjInput, '11222333000181');
+    expect(cnpjInput).toHaveValue('11.222.333/0001-81');
+  });
+
+  it('renders regime select placeholder', () => {
+    renderWithProviders(<EmpresaForm open onClose={vi.fn()} />);
+    expect(screen.getByText('Selecione...')).toBeInTheDocument();
+  });
+
+  it('opens RegimeMatrixModal on question icon click', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<EmpresaForm open onClose={vi.fn()} />);
+
+    const questionIcon = document.querySelector('.anticon-question-circle');
+    expect(questionIcon).toBeInTheDocument();
+    if (questionIcon) {
+      await user.click(questionIcon);
+    }
+
+    await waitFor(() => {
+      expect(screen.getByText('Matriz de Obrigações por Regime Tributário')).toBeInTheDocument();
+    });
+  });
+
+  it('submits form with valid data and closes', async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+
+    renderWithProviders(<EmpresaForm open onClose={onClose} />);
+
+    const cnpjInput = screen.getByPlaceholderText('00.000.000/0000-00');
+    await user.type(cnpjInput, '11.222.333/0001-81');
+
+    const nomeInput = screen.getByPlaceholderText('Nome da empresa');
+    await user.type(nomeInput, 'Empresa Teste Ltda');
+
+    const select = document.querySelector('.ant-select-selector');
+    expect(select).toBeInTheDocument();
+    if (select) {
+      await user.click(select);
+    }
+
+    const option = await screen.findByTitle('Simples Nacional');
+    await user.click(option);
+
+    await user.click(screen.getByText('Cadastrar'));
+
+    await waitFor(() => expect(onClose).toHaveBeenCalledOnce());
   });
 });

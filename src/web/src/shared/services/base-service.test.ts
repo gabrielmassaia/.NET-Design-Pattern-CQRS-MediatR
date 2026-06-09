@@ -85,4 +85,52 @@ describe('BaseService', () => {
       expect(mockClient.delete).toHaveBeenCalledWith('/api/test/1');
     });
   });
+
+  describe('getRequest (protected)', () => {
+    it('calls GET with config and returns data', async () => {
+      (mockClient.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        data: { success: true, data: [{ id: '1' }], errorCode: null },
+      });
+
+      const result = await (service as unknown as { getRequest<T>(url: string, config?: object): Promise<T> }).getRequest<{ id: string }[]>('/api/test', { params: { q: 'test' } });
+      expect(mockClient.get).toHaveBeenCalledWith('/api/test', { params: { q: 'test' } });
+      expect(result).toEqual([{ id: '1' }]);
+    });
+  });
+
+  describe('postRequest (protected)', () => {
+    it('calls POST with payload and config', async () => {
+      (mockClient.post as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        data: { success: true, data: { id: '1' }, errorCode: null },
+      });
+
+      const result = await (service as unknown as { postRequest<T>(url: string, payload?: unknown, config?: object): Promise<T> }).postRequest<{ id: string }>('/api/test', { name: 'test' });
+      expect(mockClient.post).toHaveBeenCalledWith('/api/test', { name: 'test' }, undefined);
+      expect(result).toEqual({ id: '1' });
+    });
+  });
+
+  describe('patchRequest (protected)', () => {
+    it('calls PATCH with payload', async () => {
+      (mockClient.patch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        data: { success: true, data: { id: '1', status: 3 }, errorCode: null },
+      });
+
+      const result = await (service as unknown as { patchRequest<T>(url: string, payload?: unknown, config?: object): Promise<T> }).patchRequest<{ id: string; status: number }>('/api/test/1', { status: 3 });
+      expect(mockClient.patch).toHaveBeenCalledWith('/api/test/1', { status: 3 }, undefined);
+      expect(result.status).toBe(3);
+    });
+  });
+
+  describe('deleteRequest (protected)', () => {
+    it('calls DELETE and returns data', async () => {
+      (mockClient.delete as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        data: { success: true, data: null, errorCode: null },
+      });
+
+      const result = await (service as unknown as { deleteRequest<T>(url: string, config?: object): Promise<T> }).deleteRequest<null>('/api/test/1');
+      expect(mockClient.delete).toHaveBeenCalledWith('/api/test/1', undefined);
+      expect(result).toBeNull();
+    });
+  });
 });
