@@ -102,7 +102,7 @@ public class DashboardExportServiceTests
         var result = _sut.ToCsvDashboard(DashboardSample(), AlertasSample());
 
         var csv = BytesToString(result);
-        csv.Should().Contain("INDICADORES DO MÊS ATUAL");
+        csv.Should().Contain("Indicador");
         csv.Should().Contain("Total de Empresas");
         csv.Should().Contain("5");
         csv.Should().Contain("Obrigações do Mês");
@@ -110,13 +110,23 @@ public class DashboardExportServiceTests
     }
 
     [Fact]
-    public void ToCsvDashboard_DeveConterAlertas()
+    public void ToCsvDashboard_NaoDeveConterAlertas()
     {
         var result = _sut.ToCsvDashboard(DashboardSample(), AlertasSample());
 
         var csv = BytesToString(result);
-        csv.Should().Contain("ALERTAS DE VENCIMENTO");
-        csv.Should().Contain("Empresa A");
+        csv.Should().NotContain("Empresa A");
+        csv.Should().NotContain("CNPJ");
+    }
+
+    [Fact]
+    public void ToCsvDashboard_NaoDeveConterLinhaEmBrancoNoFinal()
+    {
+        var result = _sut.ToCsvDashboard(DashboardSample(), []);
+
+        var csv = BytesToString(result);
+        csv.TrimEnd().Should().NotEndWith("\n\r");
+        csv.TrimEnd().Should().NotEndWith("\n");
     }
 
     [Fact]

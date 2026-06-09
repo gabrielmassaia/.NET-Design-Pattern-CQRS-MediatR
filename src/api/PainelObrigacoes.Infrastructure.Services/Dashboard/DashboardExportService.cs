@@ -1,4 +1,5 @@
 using System.Text;
+using ClosedXML.Excel;
 using PainelObrigacoes.Application.Dashboard.Services;
 using PainelObrigacoes.Application.Dashboard.ViewModels;
 using PainelObrigacoes.Domain.Enums;
@@ -105,26 +106,12 @@ public sealed class DashboardExportService : IDashboardExportService
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine("\"=== INDICADORES DO MÊS ATUAL ===\"");
         sb.AppendLine(BuildCsvRow(["Indicador", "Valor"]));
         sb.AppendLine(BuildCsvRow(["Total de Empresas", dashboard.TotalEmpresas.ToString()]));
         sb.AppendLine(BuildCsvRow(["Obrigações do Mês", dashboard.TotalObrigacoesMes.ToString()]));
         sb.AppendLine(BuildCsvRow(["Pendentes", dashboard.Pendentes.ToString()]));
         sb.AppendLine(BuildCsvRow(["Atrasadas", dashboard.Atrasadas.ToString()]));
         sb.AppendLine(BuildCsvRow(["Entregues", dashboard.Entregues.ToString()]));
-        sb.AppendLine();
-
-        sb.AppendLine("\"=== ALERTAS DE VENCIMENTO ===\"");
-        sb.AppendLine(BuildCsvRow(AlertasCsvHeader));
-        foreach (var a in alertas)
-            sb.AppendLine(BuildCsvRow([
-                a.RazaoSocial,
-                a.CNPJ,
-                a.TipoNome,
-                a.DataVencimento.ToString("dd/MM/yyyy"),
-                a.DiasRestantes < 0 ? $"{Math.Abs(a.DiasRestantes)}d em atraso" : $"{a.DiasRestantes}d restantes",
-                StatusLabel(a.Status),
-            ]));
 
         return Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray();
     }
@@ -240,6 +227,85 @@ public sealed class DashboardExportService : IDashboardExportService
         return document.GeneratePdf();
     }
 
+    public byte[] ToXlsxAlertas(IList<AlertaResultViewModel> alertas)
+    {
+        using var workbook = new XLWorkbook();
+        var ws = workbook.Worksheets.Add("Alertas");
+        var headers = AlertasCsvHeader;
+
+        for (var c = 0; c < headers.Length; c++)
+            ws.Cell(1, c + 1).Value = headers[c];
+
+        for (var r = 0; r < alertas.Count; r++)
+        {
+            var a = alertas[r];
+            ws.Cell(r + 2, 1).Value = a.RazaoSocial;
+            ws.Cell(r + 2, 2).Value = a.CNPJ;
+            ws.Cell(r + 2, 3).Value = a.TipoNome;
+            ws.Cell(r + 2, 4).Value = a.DataVencimento.ToString("dd/MM/yyyy");
+            ws.Cell(r + 2, 5).Value = a.DiasRestantes < 0
+                ? $"{Math.Abs(a.DiasRestantes)}d em atraso"
+                : $"{a.DiasRestantes}d restantes";
+            ws.Cell(r + 2, 6).Value = StatusLabel(a.Status);
+        }
+
+        ws.RangeUsed()!.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        ws.RangeUsed()!.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        ws.Row(1).Style.Font.Bold = true;
+        ws.Columns().AdjustToContents();
+
+        using var ms = new MemoryStream();
+        workbook.SaveAs(ms);
+        return ms.ToArray();
+    }
+
+    public byte[] ToXlsxDashboard(DashboardResultViewModel dashboard, IList<AlertaResultViewModel> alertas)
+    {
+        using var workbook = new XLWorkbook();
+
+        var wsIndicadores = workbook.Worksheets.Add("Indicadores");
+        wsIndicadores.Cell(1, 1).Value = "Indicador";
+        wsIndicadores.Cell(1, 2).Value = "Valor";
+        wsIndicadores.Row(1).Style.Font.Bold = true;
+
+        var kpis = new[] { ("Total de Empresas", dashboard.TotalEmpresas), ("Obrigações do Mês", dashboard.TotalObrigacoesMes), ("Pendentes", dashboard.Pendentes), ("Atrasadas", dashboard.Atrasadas), ("Entregues", dashboard.Entregues) };
+
+        for (var i = 0; i < kpis.Length; i++)
+        {
+            wsIndicadores.Cell(i + 2, 1).Value = kpis[i].Item1;
+            wsIndicadores.Cell(i + 2, 2).Value = kpis[i].Item2;
+        }
+
+        wsIndicadores.Columns().AdjustToContents();
+
+        var wsAlertas = workbook.Worksheets.Add("Alertas");
+        var headers = AlertasCsvHeader;
+
+        for (var c = 0; c < headers.Length; c++)
+            wsAlertas.Cell(1, c + 1).Value = headers[c];
+
+        for (var r = 0; r < alertas.Count; r++)
+        {
+            var a = alertas[r];
+            wsAlertas.Cell(r + 2, 1).Value = a.RazaoSocial;
+            wsAlertas.Cell(r + 2, 2).Value = a.CNPJ;
+            wsAlertas.Cell(r + 2, 3).Value = a.TipoNome;
+            wsAlertas.Cell(r + 2, 4).Value = a.DataVencimento.ToString("dd/MM/yyyy");
+            wsAlertas.Cell(r + 2, 5).Value = a.DiasRestantes < 0
+                ? $"{Math.Abs(a.DiasRestantes)}d em atraso"
+                : $"{a.DiasRestantes}d restantes";
+            wsAlertas.Cell(r + 2, 6).Value = StatusLabel(a.Status);
+        }
+
+        wsAlertas.RangeUsed()!.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        wsAlertas.Row(1).Style.Font.Bold = true;
+        wsAlertas.Columns().AdjustToContents();
+
+        using var ms = new MemoryStream();
+        workbook.SaveAs(ms);
+        return ms.ToArray();
+    }
+
     private static string StatusLabel(StatusObrigacao status) => status switch
     {
         StatusObrigacao.Pendente     => "Pendente",
@@ -250,7 +316,7 @@ public sealed class DashboardExportService : IDashboardExportService
     };
 
     private static string BuildCsvRow(string[] fields)
-        => string.Join(",", fields.Select(f =>
+        => string.Join(";", fields.Select(f =>
         {
             var escaped = f.Replace("\"", "\"\"");
             if (escaped.Length > 0 && "+-=@".Contains(escaped[0]))

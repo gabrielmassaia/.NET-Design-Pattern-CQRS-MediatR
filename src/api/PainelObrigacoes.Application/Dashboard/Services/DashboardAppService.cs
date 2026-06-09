@@ -35,9 +35,12 @@ public sealed class DashboardAppService : IDashboardAppService
     {
         var alertas = await GetAlertasAsync(ct);
         var now = DateTime.Now;
-        return formato.ToLowerInvariant() == "pdf"
-            ? (_exportService.ToPdfAlertas(alertas), "application/pdf", $"alertas-{now:yyyy-MM}.pdf")
-            : (_exportService.ToCsvAlertas(alertas), "text/csv", $"alertas-{now:yyyy-MM}.csv");
+        return formato.ToLowerInvariant() switch
+        {
+            "pdf"  => (_exportService.ToPdfAlertas(alertas), "application/pdf", $"alertas-{now:yyyy-MM}.pdf"),
+            "xlsx" => (_exportService.ToXlsxAlertas(alertas), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"alertas-{now:yyyy-MM}.xlsx"),
+            _      => (_exportService.ToCsvAlertas(alertas), "text/csv", $"alertas-{now:yyyy-MM}.csv"),
+        };
     }
 
     public async Task<(byte[] Content, string ContentType, string FileName)> ExportDashboardAsync(
@@ -46,8 +49,11 @@ public sealed class DashboardAppService : IDashboardAppService
         var dashboard = await GetDashboardAsync(ct: ct);
         var alertas = await GetAlertasAsync(ct);
         var now = DateTime.Now;
-        return formato.ToLowerInvariant() == "pdf"
-            ? (_exportService.ToPdfDashboard(dashboard, alertas), "application/pdf", $"dashboard-{now:yyyy-MM}.pdf")
-            : (_exportService.ToCsvDashboard(dashboard, alertas), "text/csv", $"dashboard-{now:yyyy-MM}.csv");
+        return formato.ToLowerInvariant() switch
+        {
+            "pdf"  => (_exportService.ToPdfDashboard(dashboard, alertas), "application/pdf", $"dashboard-{now:yyyy-MM}.pdf"),
+            "xlsx" => (_exportService.ToXlsxDashboard(dashboard, alertas), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"dashboard-{now:yyyy-MM}.xlsx"),
+            _      => (_exportService.ToCsvDashboard(dashboard, alertas), "text/csv", $"dashboard-{now:yyyy-MM}.csv"),
+        };
     }
 }

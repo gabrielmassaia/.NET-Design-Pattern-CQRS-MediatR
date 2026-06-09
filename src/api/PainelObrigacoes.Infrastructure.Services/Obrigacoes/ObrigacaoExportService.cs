@@ -1,4 +1,5 @@
 using System.Text;
+using ClosedXML.Excel;
 using PainelObrigacoes.Application.Obrigacoes.Services;
 using PainelObrigacoes.Application.Obrigacoes.ViewModels;
 using PainelObrigacoes.Domain.Enums;
@@ -110,6 +111,35 @@ public sealed class ObrigacaoExportService : IObrigacaoExportService
         return document.GeneratePdf();
     }
 
+    public byte[] ToXlsx(IList<ObrigacaoResultViewModel> obrigacoes, int ano, int mes)
+    {
+        using var workbook = new XLWorkbook();
+        var ws = workbook.Worksheets.Add("Obrigações");
+        var headers = CsvHeader;
+
+        for (var c = 0; c < headers.Length; c++)
+            ws.Cell(1, c + 1).Value = headers[c];
+
+        for (var r = 0; r < obrigacoes.Count; r++)
+        {
+            var o = obrigacoes[r];
+            ws.Cell(r + 2, 1).Value = o.RazaoSocial;
+            ws.Cell(r + 2, 2).Value = o.TipoNome;
+            ws.Cell(r + 2, 3).Value = o.Competencia.ToString("MM/yyyy");
+            ws.Cell(r + 2, 4).Value = o.DataVencimento.ToString("dd/MM/yyyy");
+            ws.Cell(r + 2, 5).Value = o.DataEntrega?.ToString("dd/MM/yyyy") ?? "";
+            ws.Cell(r + 2, 6).Value = StatusLabel(o.Status);
+        }
+
+        ws.RangeUsed()!.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+        ws.Row(1).Style.Font.Bold = true;
+        ws.Columns().AdjustToContents();
+
+        using var ms = new MemoryStream();
+        workbook.SaveAs(ms);
+        return ms.ToArray();
+    }
+
     private static string StatusLabel(StatusObrigacao status) => status switch
     {
         StatusObrigacao.Pendente     => "Pendente",
@@ -120,7 +150,7 @@ public sealed class ObrigacaoExportService : IObrigacaoExportService
     };
 
     private static string BuildCsvRow(string[] fields)
-        => string.Join(",", fields.Select(f =>
+        => string.Join(";", fields.Select(f =>
         {
             var escaped = f.Replace("\"", "\"\"");
             if (escaped.Length > 0 && "+-=@".Contains(escaped[0]))

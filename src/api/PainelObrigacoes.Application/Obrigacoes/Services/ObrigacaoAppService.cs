@@ -50,12 +50,11 @@ public sealed class ObrigacaoAppService : IObrigacaoAppService
         var mes = viewModel.Mes;
         var ano = viewModel.Ano;
 
-        return formato.ToLowerInvariant() == "pdf"
-            ? (_exportService.ToPdf(obrigacoes, ano, mes),
-               "application/pdf",
-               $"obrigacoes-{ano}-{mes:D2}.pdf")
-            : (_exportService.ToCsv(obrigacoes, ano, mes),
-               "text/csv",
-               $"obrigacoes-{ano}-{mes:D2}.csv");
+        return formato.ToLowerInvariant() switch
+        {
+            "pdf"  => (_exportService.ToPdf(obrigacoes, ano, mes), "application/pdf", $"obrigacoes-{ano}-{mes:D2}.pdf"),
+            "xlsx" => (_exportService.ToXlsx(obrigacoes, ano, mes), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"obrigacoes-{ano}-{mes:D2}.xlsx"),
+            _      => (_exportService.ToCsv(obrigacoes, ano, mes), "text/csv", $"obrigacoes-{ano}-{mes:D2}.csv"),
+        };
     }
 }

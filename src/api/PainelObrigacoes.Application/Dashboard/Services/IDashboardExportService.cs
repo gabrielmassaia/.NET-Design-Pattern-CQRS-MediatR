@@ -6,6 +6,8 @@ public interface IDashboardExportService
 {
     byte[] ToCsvAlertas(IList<AlertaResultViewModel> alertas);
     byte[] ToPdfAlertas(IList<AlertaResultViewModel> alertas);
+    byte[] ToXlsxAlertas(IList<AlertaResultViewModel> alertas);
     byte[] ToCsvDashboard(DashboardResultViewModel dashboard, IList<AlertaResultViewModel> alertas);
     byte[] ToPdfDashboard(DashboardResultViewModel dashboard, IList<AlertaResultViewModel> alertas);
+    byte[] ToXlsxDashboard(DashboardResultViewModel dashboard, IList<AlertaResultViewModel> alertas);
 }

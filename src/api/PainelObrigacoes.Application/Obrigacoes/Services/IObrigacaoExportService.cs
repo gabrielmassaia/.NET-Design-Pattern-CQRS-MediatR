@@ -6,4 +6,5 @@ public interface IObrigacaoExportService
 {
     byte[] ToCsv(IList<ObrigacaoResultViewModel> obrigacoes, int ano, int mes);
     byte[] ToPdf(IList<ObrigacaoResultViewModel> obrigacoes, int ano, int mes);
+    byte[] ToXlsx(IList<ObrigacaoResultViewModel> obrigacoes, int ano, int mes);
 }
