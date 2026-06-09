@@ -1,0 +1,83 @@
+@baseUrl = http://localhost:8080
+
+### Listar empresas
+GET {{baseUrl}}/api/empresas
+Accept: application/json
+
+### Criar empresa (Simples Nacional)
+POST {{baseUrl}}/api/empresas
+Content-Type: application/json
+Accept: application/json
+
+{
+  "cnpj": "55666777000145",
+  "razaoSocial": "Empresa Nova Ltda",
+  "regime": 1
+}
+
+### Criar empresa (CNPJ duplicado — deve retornar 409)
+POST {{baseUrl}}/api/empresas
+Content-Type: application/json
+Accept: application/json
+
+{
+  "cnpj": "55666777000145",
+  "razaoSocial": "Duplicada Ltda",
+  "regime": 1
+}
+
+### Criar empresa (dados inválidos — deve retornar 400)
+POST {{baseUrl}}/api/empresas
+Content-Type: application/json
+Accept: application/json
+
+{
+  "cnpj": "invalido",
+  "razaoSocial": "",
+  "regime": 99
+}
+
+### Buscar empresa
+GET {{baseUrl}}/api/empresas/search?q=padaria
+Accept: application/json
+
+### Deletar empresa (substituir id pelo guid real retornado na criação)
+DELETE {{baseUrl}}/api/empresas/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### Listar obrigações (substituir empresaId pelo guid real)
+GET {{baseUrl}}/api/obrigacoes?empresaId=00000000-0000-0000-0000-000000000000&ano=2026&mes=6
+Accept: application/json
+
+### Registrar entrega (substituir id pelo guid real da obrigação)
+PATCH {{baseUrl}}/api/obrigacoes/00000000-0000-0000-0000-000000000000/entrega
+Content-Type: application/json
+Accept: application/json
+
+{
+  "dataEntrega": "2026-06-05T10:00:00Z"
+}
+
+### Histórico de entregas (substituir empresaId pelo guid real)
+GET {{baseUrl}}/api/obrigacoes/historico/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+### Exportar obrigações (substituir empresaId pelo guid real)
+GET {{baseUrl}}/api/obrigacoes/export?empresaId=00000000-0000-0000-0000-000000000000&ano=2026&mes=6&formato=csv
+Accept: text/csv
+
+### Dashboard
+GET {{baseUrl}}/api/dashboard
+Accept: application/json
+
+### Alertas
+GET {{baseUrl}}/api/dashboard/alertas
+Accept: application/json
+
+### Exportar dashboard
+GET {{baseUrl}}/api/dashboard/export?formato=csv
+Accept: text/csv
+
+### Exportar alertas
+GET {{baseUrl}}/api/dashboard/alertas/export?formato=csv
+Accept: text/csv
