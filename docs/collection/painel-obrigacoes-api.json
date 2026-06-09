@@ -1,0 +1,626 @@
+{
+  "info": {
+    "name": "Painel de Obrigações Acessórias API",
+    "description": "Documentação da API REST do sistema de controle de obrigações fiscais acessórias.\n\nBase URL: http://localhost:8080\n\nTodas as respostas são envelopadas em ResponseData<T>:\n{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": { ... },\n  \"errorCode\": null\n}",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "case-e-auditoria"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "empresaId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "obrigacaoId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Health check da API. Retorna 200 OK se o serviço está operacional."
+          },
+          "response": [
+            {
+              "name": "Health OK",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "text/plain" }
+              ],
+              "body": "Healthy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Empresas",
+      "description": "CRUD de empresas. Cada empresa pertence a um regime tributário que determina quais obrigações são geradas.",
+      "item": [
+        {
+          "name": "GET /api/empresas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta envelopada', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('success');",
+                  "    pm.expect(json).to.have.property('data');",
+                  "});",
+                  "",
+                  "if (pm.response.json().data && pm.response.json().data.length > 0) {",
+                  "    pm.collectionVariables.set('empresaId', pm.response.json().data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/empresas?skip=0&take=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "empresas"],
+              "query": [
+                { "key": "skip", "value": "0", "description": "Registros a pular (paginação)" },
+                { "key": "take", "value": "50", "description": "Registros por página (max 50)" }
+              ]
+            },
+            "description": "Lista todas as empresas com paginação."
+          },
+          "response": [
+            {
+              "name": "Lista de Empresas",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": [\n    {\n      \"id\": \"a1b2c3d4-...\",\n      \"cnpj\": \"00000000000000\",\n      \"razaoSocial\": \"Empresa Simples Nacional Ltda\",\n      \"regime\": 1,\n      \"createdAt\": \"2026-01-01T00:00:00Z\"\n    }\n  ],\n  \"errorCode\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "POST /api/empresas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Empresa criada com ID', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.success).to.be.true;",
+                  "    pm.expect(json.data).to.have.property('id');",
+                  "});",
+                  "",
+                  "pm.collectionVariables.set('empresaId', pm.response.json().data.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cnpj\": \"11222333000181\",\n  \"razaoSocial\": \"Empresa Exemplo Ltda\",\n  \"regime\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/empresas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "empresas"]
+            },
+            "description": "Cria uma nova empresa. O regime tributário determina quais obrigações serão geradas (12 meses).\n\nRegimes:\n1 = Simples Nacional\n2 = Lucro Presumido\n3 = Lucro Real\n4 = Imunidade/Isenção"
+          },
+          "response": [
+            {
+              "name": "Empresa Criada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": {\n    \"id\": \"a1b2c3d4-...\",\n    \"cnpj\": \"11222333000181\",\n    \"razaoSocial\": \"Empresa Exemplo Ltda\",\n    \"regime\": 1,\n    \"createdAt\": \"2026-06-08T17:00:00Z\"\n  },\n  \"errorCode\": null\n}"
+            },
+            {
+              "name": "CNPJ Duplicado",
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"CNPJ já cadastrado.\",\n  \"data\": null,\n  \"errorCode\": \"Conflict\"\n}"
+            },
+            {
+              "name": "Validação",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"'CNPJ' não pode estar vazio; 'Razao Social' não pode estar vazia\",\n  \"data\": null,\n  \"errorCode\": \"Validation\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /api/empresas/search",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resultados de busca', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.success).to.be.true;",
+                  "    pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/empresas/search?q=simples",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "empresas", "search"],
+              "query": [
+                { "key": "q", "value": "simples", "description": "Termo de busca (Meilisearch typo-tolerant)" }
+              ]
+            },
+            "description": "Busca textual de empresas via Meilisearch. Suporta typo-tolerance."
+          },
+          "response": [
+            {
+              "name": "Resultado da Busca",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": [\n    {\n      \"id\": \"a1b2c3d4-...\",\n      \"cnpj\": \"00000000000000\",\n      \"razaoSocial\": \"Empresa Simples Nacional Ltda\",\n      \"regime\": 1,\n      \"createdAt\": \"2026-01-01T00:00:00Z\"\n    }\n  ],\n  \"errorCode\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "DELETE /api/empresas/{id}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Empresa deletada', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.success).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/empresas/{{empresaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "empresas", "{{empresaId}}"]
+            },
+            "description": "Soft-delete de empresa (IsActive = false). Obrigações são deletadas via cascade da FK."
+          },
+          "response": [
+            {
+              "name": "Empresa Deletada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": true,\n  \"errorCode\": null\n}"
+            },
+            {
+              "name": "Não Encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Empresa não encontrada.\",\n  \"data\": null,\n  \"errorCode\": \"NotFound\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Obrigações",
+      "description": "Gestão de obrigações acessórias: consulta, registro de entrega, histórico e exportação.",
+      "item": [
+        {
+          "name": "GET /api/obrigacoes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Resposta envelopada', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('success');",
+                  "    pm.expect(json).to.have.property('data');",
+                  "});",
+                  "",
+                  "if (pm.response.json().data && pm.response.json().data.length > 0) {",
+                  "    pm.collectionVariables.set('obrigacaoId', pm.response.json().data[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/obrigacoes?empresaId={{empresaId}}&ano=2026&mes=6&skip=0&take=100",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "obrigacoes"],
+              "query": [
+                { "key": "empresaId", "value": "{{empresaId}}", "description": "ID da empresa" },
+                { "key": "ano", "value": "2026", "description": "Ano da competência" },
+                { "key": "mes", "value": "6", "description": "Mês da competência (1-12)" },
+                { "key": "skip", "value": "0", "description": "Registros a pular (paginação)" },
+                { "key": "take", "value": "100", "description": "Registros por página" }
+              ]
+            },
+            "description": "Lista as obrigações de uma empresa para um determinado mês/ano.\n\nStatus calculado automaticamente:\n- Pendente (1): data de vencimento futura, sem entrega\n- Atrasada (2): data de vencimento passada, sem entrega\n- Entregue (3): possui data de entrega"
+          },
+          "response": [
+            {
+              "name": "Lista de Obrigações",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": [\n    {\n      \"id\": \"b2c3d4e5-...\",\n      \"empresaId\": \"a1b2c3d4-...\",\n      \"razaoSocial\": \"Empresa Exemplo Ltda\",\n      \"tipo\": 1,\n      \"tipoNome\": \"DAS\",\n      \"competencia\": \"2026-06-01T00:00:00\",\n      \"dataVencimento\": \"2026-07-20T00:00:00\",\n      \"dataEntrega\": null,\n      \"status\": 1\n    }\n  ],\n  \"errorCode\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "PATCH /api/obrigacoes/{id}/entrega",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Entrega registrada', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.success).to.be.true;",
+                  "    pm.expect(json.data.status).to.eql(3);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dataEntrega\": \"2026-06-08T00:00:00Z\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/obrigacoes/{{obrigacaoId}}/entrega",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "obrigacoes", "{{obrigacaoId}}", "entrega"]
+            },
+            "description": "Registra a entrega de uma obrigação. Se dataEntrega não for informada, usa UTC now.\n\nDispara evento de domínio ObrigacaoEntregueEvent que invalida o cache do dashboard e alertas.\n\nProteção contra concorrência via RowVersion (concurrency token do EF Core)."
+          },
+          "response": [
+            {
+              "name": "Entrega Registrada",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": {\n    \"id\": \"b2c3d4e5-...\",\n    \"empresaId\": \"a1b2c3d4-...\",\n    \"razaoSocial\": \"Empresa Exemplo Ltda\",\n    \"tipo\": 1,\n    \"tipoNome\": \"DAS\",\n    \"competencia\": \"2026-06-01T00:00:00\",\n    \"dataVencimento\": \"2026-07-20T00:00:00\",\n    \"dataEntrega\": \"2026-06-08T00:00:00\",\n    \"status\": 3\n  },\n  \"errorCode\": null\n}"
+            },
+            {
+              "name": "Já Entregue",
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Obrigação já foi marcada como entregue.\",\n  \"data\": null,\n  \"errorCode\": \"Conflict\"\n}"
+            },
+            {
+              "name": "Não Encontrada",
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Obrigação não encontrada.\",\n  \"data\": null,\n  \"errorCode\": \"NotFound\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /api/obrigacoes/historico/{empresaId}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Histórico de entregas', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.success).to.be.true;",
+                  "    pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/obrigacoes/historico/{{empresaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "obrigacoes", "historico", "{{empresaId}}"]
+            },
+            "description": "Retorna o histórico de obrigações já entregues por uma empresa, ordenadas da mais recente para a mais antiga."
+          },
+          "response": [
+            {
+              "name": "Histórico de Entregas",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": [\n    {\n      \"id\": \"b2c3d4e5-...\",\n      \"empresaId\": \"a1b2c3d4-...\",\n      \"razaoSocial\": \"Empresa Exemplo Ltda\",\n      \"tipo\": 1,\n      \"tipoNome\": \"DAS\",\n      \"competencia\": \"2026-06-01T00:00:00\",\n      \"dataVencimento\": \"2026-07-20T00:00:00\",\n      \"dataEntrega\": \"2026-06-08T00:00:00\",\n      \"status\": 3\n    }\n  ],\n  \"errorCode\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /api/obrigacoes/export",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Content-Type é CSV', () => {",
+                  "    pm.expect(pm.response.headers.get('Content-Type')).to.include('text/csv');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/obrigacoes/export?empresaId={{empresaId}}&ano=2026&mes=6&formato=csv",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "obrigacoes", "export"],
+              "query": [
+                { "key": "empresaId", "value": "{{empresaId}}" },
+                { "key": "ano", "value": "2026" },
+                { "key": "mes", "value": "6" },
+                { "key": "formato", "value": "csv", "description": "Formato de exportação: csv ou pdf" }
+              ]
+            },
+            "description": "Exporta obrigações em CSV ou PDF. O retorno é um arquivo binário (Content-Disposition: attachment)."
+          },
+          "response": [
+            {
+              "name": "CSV Export",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "text/csv" },
+                { "key": "Content-Disposition", "value": "attachment; filename=\"obrigacoes-2026-06.csv\"" }
+              ],
+              "body": "Tipo,Vencimento,Entrega,Status\nDAS,2026-07-20,,Pendente\nDCTF,2026-08-15,,Pendente\n"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "description": "Dashboard consolidado com totais e alertas de prazos. Dados cacheados em Redis com TTL de 30s (dashboard) e 60s (alertas).",
+      "item": [
+        {
+          "name": "GET /api/dashboard",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Dashboard com totais', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.success).to.be.true;",
+                  "    pm.expect(json.data).to.have.all.keys('totalEmpresas', 'totalObrigacoesMes', 'pendentes', 'entregues', 'atrasadas');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard"]
+            },
+            "description": "Retorna os totais consolidados do dashboard para o mês corrente.\n\nDados cacheados em Redis por 30s (TTL). Cache é invalidado automaticamente quando uma obrigação é marcada como entregue."
+          },
+          "response": [
+            {
+              "name": "Dashboard Data",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": {\n    \"totalEmpresas\": 4,\n    \"totalObrigacoesMes\": 12,\n    \"pendentes\": 8,\n    \"entregues\": 3,\n    \"atrasadas\": 1\n  },\n  \"errorCode\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /api/dashboard/alertas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Lista de alertas', () => {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.success).to.be.true;",
+                  "    pm.expect(json.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/alertas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "alertas"]
+            },
+            "description": "Retorna lista de alertas: obrigações vencendo em até 30 dias ou já atrasadas, ordenadas por urgência.\n\nDados cacheados em Redis por 60s (TTL). Cache é invalidado automaticamente quando uma obrigação é marcada como entregue."
+          },
+          "response": [
+            {
+              "name": "Alertas",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                { "key": "Content-Type", "value": "application/json" }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"\",\n  \"data\": [\n    {\n      \"id\": \"b2c3d4e5-...\",\n      \"empresaId\": \"a1b2c3d4-...\",\n      \"razaoSocial\": \"Empresa Exemplo Ltda\",\n      \"cnpj\": \"11222333000181\",\n      \"tipoNome\": \"DAS\",\n      \"dataVencimento\": \"2026-06-10T00:00:00\",\n      \"diasRestantes\": 2,\n      \"status\": 1\n    },\n    {\n      \"id\": \"c3d4e5f6-...\",\n      \"empresaId\": \"a1b2c3d4-...\",\n      \"razaoSocial\": \"Empresa Exemplo Ltda\",\n      \"cnpj\": \"11222333000181\",\n      \"tipoNome\": \"DCTF\",\n      \"dataVencimento\": \"2026-06-01T00:00:00\",\n      \"diasRestantes\": -7,\n      \"status\": 2\n    }\n  ],\n  \"errorCode\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "GET /api/dashboard/export",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/export?formato=csv",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "export"],
+              "query": [
+                { "key": "formato", "value": "csv", "description": "csv ou pdf" }
+              ]
+            },
+            "description": "Exporta os dados do dashboard em CSV ou PDF."
+          }
+        },
+        {
+          "name": "GET /api/dashboard/alertas/export",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/alertas/export?formato=csv",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "alertas", "export"],
+              "query": [
+                { "key": "formato", "value": "csv", "description": "csv ou pdf" }
+              ]
+            },
+            "description": "Exporta a lista de alertas em CSV ou PDF."
+          }
+        }
+      ]
+    }
+  ]
+}
