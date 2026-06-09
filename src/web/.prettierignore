@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+.next
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.woff
+*.woff2
+package-lock.json

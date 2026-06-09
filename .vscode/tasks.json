@@ -1,0 +1,135 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // ── Backend ──────────────────────────────────────────
+    {
+      "label": "API: Build",
+      "type": "shell",
+      "command": "dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj",
+      "problemMatcher": ["$msCompile"],
+      "group": "build"
+    },
+    {
+      "label": "API: Test",
+      "type": "shell",
+      "command": "dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj",
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "API: Watch (dotnet watch)",
+      "type": "shell",
+      "command": "dotnet watch run --project src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "API: Add Migration",
+      "type": "shell",
+      "command": "cd src/api && dotnet ef migrations add ${input:migrationName} --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api",
+      "problemMatcher": []
+    },
+    {
+      "label": "API: Update Database",
+      "type": "shell",
+      "command": "cd src/api && dotnet ef database update --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api",
+      "problemMatcher": []
+    },
+    // ── Frontend ─────────────────────────────────────────
+    {
+      "label": "Web: Dev Server",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "src/web" },
+      "problemMatcher": [],
+      "isBackground": true,
+      "group": "build"
+    },
+    {
+      "label": "Web: Build",
+      "type": "shell",
+      "command": "npm run build",
+      "options": { "cwd": "src/web" },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Web: Lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "options": { "cwd": "src/web" },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Web: Test",
+      "type": "shell",
+      "command": "npm run test",
+      "options": { "cwd": "src/web" },
+      "problemMatcher": [],
+      "group": "test"
+    },
+    {
+      "label": "Web: Test (Watch)",
+      "type": "shell",
+      "command": "npm run test:watch",
+      "options": { "cwd": "src/web" },
+      "problemMatcher": [],
+      "group": "test",
+      "isBackground": true
+    },
+    {
+      "label": "Web: Coverage",
+      "type": "shell",
+      "command": "npm run test:coverage",
+      "options": { "cwd": "src/web" },
+      "problemMatcher": [],
+      "group": "test"
+    },
+    // ── Docker ────────────────────────────────────────────
+    {
+      "label": "Docker: Up (Full Stack)",
+      "type": "shell",
+      "command": "docker compose up --build -d",
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Docker: Down",
+      "type": "shell",
+      "command": "docker compose down",
+      "problemMatcher": []
+    },
+    {
+      "label": "Docker: Logs API",
+      "type": "shell",
+      "command": "docker compose logs -f api",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    {
+      "label": "Docker: Logs Web",
+      "type": "shell",
+      "command": "docker compose logs -f web",
+      "problemMatcher": [],
+      "isBackground": true
+    },
+    // ── Coverage ─────────────────────────────────────────
+    {
+      "label": "Coverage: Open Report (Web)",
+      "type": "shell",
+      "command": "start coverage/index.html",
+      "problemMatcher": [],
+      "dependsOn": "Web: Coverage"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "migrationName",
+      "type": "promptString",
+      "description": "Nome da migration (ex: AddUsersTable)",
+      "default": "NewMigration",
+      "label": "Migration Name"
+    }
+  ]
+}

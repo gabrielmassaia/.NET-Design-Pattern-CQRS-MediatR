@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.csdevkit",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "tailwindcss.tailwindcss",
+    "ms-vscode.vscode-typescript-next",
+    "christian-kohler.path-intellisense",
+    "eamodio.gitlens",
+    "usernamehw.errorlens",
+    "ms-vscode-remote.remote-containers",
+    "ms-azuretools.vscode-docker",
+    "formulahendry.dotnet-test-explorer",
+    "ZixuanChen.vitest-explorer",
+    "streetsidesoftware.code-spell-checker",
+    "naumovs.color-highlight",
+    "mikestead.dotenv",
+    "pkief.material-icon-theme"
+  ]
+}

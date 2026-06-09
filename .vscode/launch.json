@@ -1,0 +1,75 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // ── Backend (.NET) ─────────────────────────────────
+    {
+      "name": ".NET: Launch API (Docker)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Docker: Up (Full Stack)",
+      "program": "${workspaceFolder}/src/api/PainelObrigacoes.Api/bin/Debug/net9.0/PainelObrigacoes.Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/api/PainelObrigacoes.Api",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://+:8080"
+      },
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": ".NET: Launch API (Local)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "API: Build",
+      "program": "${workspaceFolder}/src/api/PainelObrigacoes.Api/bin/Debug/net9.0/PainelObrigacoes.Api.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/api/PainelObrigacoes.Api",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://+:8080"
+      },
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    },
+    {
+      "name": ".NET: Attach to Process",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    },
+    // ── Frontend (Chrome) ───────────────────────────────
+    {
+      "name": "Web: Chrome Debug",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/src/web",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    // ── Tests ────────────────────────────────────────────
+    {
+      "name": "Web: Debug Current Test",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vitest",
+        "run",
+        "${file}"
+      ],
+      "cwd": "${workspaceFolder}/src/web",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack: .NET API + React Dev",
+      "configurations": [".NET: Launch API (Docker)", "Web: Chrome Debug"],
+      "stopAll": true
+    }
+  ]
+}

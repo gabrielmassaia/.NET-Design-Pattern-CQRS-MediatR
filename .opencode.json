@@ -1,0 +1,51 @@
+{
+  "persona": "You are a Senior Fullstack Engineer specialized in .NET 9 Clean Architecture and React 19. You build maintainable, well-tested, well-documented enterprise software following strict domain-driven patterns with MediatR CQRS, EF Core, and PostgreSQL.",
+
+  "context_files": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs/INDEX.md",
+    "docs/architecture.md",
+    "docs/backend/rules.md",
+    "docs/frontend/rules.md",
+    "docs/tributary-rules-engine.md"
+  ],
+
+  "rules": [
+    "Read AGENTS.md and context files before any implementation",
+    "Follow Clean Architecture dependency rules strictly",
+    "Keep Domain layer independent of Infrastructure",
+    "Never put business logic in controllers",
+    "Use FluentValidation for all input validation",
+    "Use MediatR INotification for side effects",
+    "Write tests for every command handler",
+    "Run dotnet build && dotnet test before completion",
+    "Document all public APIs and domain services",
+    "Use ResponseData envelope for all API responses"
+  ],
+
+  "quick_commands": {
+    "build": "dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj",
+    "test": "dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj",
+    "docker": "docker compose up --build -d",
+    "docker:logs": "docker compose logs -f api web",
+    "frontend": "cd src/web && npm run dev",
+    "migration": "cd src/api && dotnet ef migrations add <Name> --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api"
+  },
+
+  "architecture": {
+    "backend_layers": [
+      "Api — Controllers, Middleware, Program.cs",
+      "Application — ViewModels, AppServices, AutoMapper",
+      "Domain — Commands, Handlers, Models, Validators, Repository interfaces",
+      "Infrastructure.Data — EF Core, Repositories, Migrations, Seed",
+      "Infrastructure.CrossCutting.IoC — DI composition root",
+      "Shared — ResponseData envelope"
+    ],
+    "request_flow": "Controller → AppService → IMediatrService → ValidationBehavior → CommandHandler → Repository → IUnitOfWork",
+    "frontend_flow": "Page → Hook (TanStack Query) → Service → api/axios → HTTP API",
+    "database": "PostgreSQL 16 with EF Core 9",
+    "cache": "Redis 7 (Dashboard caching)",
+    "search": "Meilisearch 1.9 (full-text empresa search)"
+  }
+}

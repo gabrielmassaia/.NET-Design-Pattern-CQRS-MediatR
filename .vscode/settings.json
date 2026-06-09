@@ -1,0 +1,207 @@
+{
+  // =========================
+  // FORMAT / PRETTIER
+  // =========================
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": false,
+  "prettier.requireConfig": true,
+
+  // =========================
+  // SAVE ACTIONS
+  // =========================
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+
+  // =========================
+  // LANGUAGE-SPECIFIC FORMATTERS
+  // =========================
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.wordWrap": "on"
+  },
+  "[csharp]": {
+    "editor.defaultFormatter": "ms-dotnettools.csharp"
+  },
+
+  // =========================
+  // ESLINT
+  // =========================
+  "eslint.format.enable": false,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.workingDirectories": [{ "pattern": "src/web" }],
+
+  // =========================
+  // TYPESCRIPT / JAVASCRIPT
+  // =========================
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.autoImports": true,
+  "javascript.suggest.autoImports": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.quoteStyle": "single",
+
+  // =========================
+  // TAILWIND
+  // =========================
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.includeLanguages": {
+    "plaintext": "html"
+  },
+  "tailwindCSS.classAttributes": ["class", "className", "ngClass"],
+
+  // =========================
+  // QUICK SUGGESTIONS
+  // =========================
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "editor.inlineSuggest.enabled": true,
+  "editor.suggestSelection": "first",
+
+  // =========================
+  // C# / .NET
+  // =========================
+  "csharp.format.enable": true,
+  "dotnet.defaultSolution": "case_e-Auditoria.slnx",
+  "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+  "omnisharp.enableRoslynAnalyzers": true,
+  "omnisharp.enableEditorConfigSupport": true,
+  "csharp.semanticHighlighting.enabled": true,
+
+  // =========================
+  // DEBUG
+  // =========================
+  "debug.console.fontSize": 13,
+  "debug.console.lineHeight": 19,
+  "debug.inlineValues": true,
+
+  // =========================
+  // EDITOR VISUALS
+  // =========================
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+  "editor.guides.indentation": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "selection",
+  "editor.scrollBeyondLastLine": false,
+  "editor.stickyScroll.enabled": true,
+
+  // =========================
+  // FILES
+  // =========================
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 800,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "files.associations": {
+    "*.slnx": "xml",
+    "*.props": "xml",
+    "*.csproj": "xml"
+  },
+
+  // =========================
+  // SEARCH EXCLUDES
+  // =========================
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bin": true,
+    "**/obj": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/.turbo": true
+  },
+
+  // =========================
+  // WATCHER EXCLUDES
+  // =========================
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/dist/**": true,
+    "**/coverage/**": true,
+    "**/.turbo/**": true,
+    "**/bin/**": true,
+    "**/obj/**": true
+  },
+
+  // =========================
+  // EXPLORER / FILE NESTING 🔥
+  // =========================
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.ts": "${capture}.test.ts, ${capture}.spec.ts, ${capture}.d.ts",
+    "*.tsx": "${capture}.test.tsx, ${capture}.spec.tsx",
+    "*.js": "${capture}.test.js, ${capture}.spec.js",
+    "*.jsx": "${capture}.test.jsx, ${capture}.spec.jsx",
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, .npmrc, .prettierrc, .prettierignore, eslint.config.js, eslint.config.mjs, .eslintrc.json, tsconfig.json, tsconfig.app.json, tsconfig.node.json, vite.config.ts, index.html, Dockerfile, .dockerignore",
+    ".slnx": ".gitignore, AGENTS.md, CLAUDE.md, .opencode.json, docker-compose.yml, docs/",
+    "docker-compose.yml": "docker-compose.override.yml",
+    "*.csproj": "appsettings.json, appsettings.Development.json"
+  },
+
+  // =========================
+  // ERROR LENS
+  // =========================
+  "errorLens.enabled": true,
+  "errorLens.fontSize": 12,
+  "errorLens.messageBackgroundMode": "none",
+
+  // =========================
+  // GIT
+  // =========================
+  "git.autofetch": true,
+  "git.enableSmartCommit": false,
+  "git.confirmSync": false,
+
+  // =========================
+  // TERMINAL
+  // =========================
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.cwd": "${workspaceFolder}",
+
+  // =========================
+  // SECURITY
+  // =========================
+  "security.workspace.trust.enabled": true
+}

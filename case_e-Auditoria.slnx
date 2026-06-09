@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/api/">
+    <Project Path="src/api/PainelObrigacoes.IntegrationTests/PainelObrigacoes.IntegrationTests.csproj" />
+  </Folder>
+  <Project Path="src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj" />
+  <Project Path="src/api/PainelObrigacoes.Application/PainelObrigacoes.Application.csproj" />
+  <Project Path="src/api/PainelObrigacoes.Domain/PainelObrigacoes.Domain.csproj" />
+  <Project Path="src/api/PainelObrigacoes.Infrastructure.CrossCutting.IoC/PainelObrigacoes.Infrastructure.CrossCutting.IoC.csproj" />
+  <Project Path="src/api/PainelObrigacoes.Infrastructure.Data/PainelObrigacoes.Infrastructure.Data.csproj" />
+  <Project Path="src/api/PainelObrigacoes.Infrastructure.Services/PainelObrigacoes.Infrastructure.Services.csproj" />
+  <Project Path="src/api/PainelObrigacoes.Shared/PainelObrigacoes.Shared.csproj" />
+  <Project Path="src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj" />
+</Solution>
