@@ -10,6 +10,7 @@ using PainelObrigacoes.Infrastructure.CrossCutting.IoC.Dashboard;
 using PainelObrigacoes.Infrastructure.CrossCutting.IoC.Empresas;
 using PainelObrigacoes.Infrastructure.CrossCutting.IoC.Obrigacoes;
 using PainelObrigacoes.Infrastructure.Data.Context;
+using PainelObrigacoes.Infrastructure.Data.Services;
 
 namespace PainelObrigacoes.Infrastructure.CrossCutting.IoC;
 
@@ -37,7 +38,9 @@ public static class ProjectBootstrapper
         services.AddSingleton(new MeilisearchClient(meiliUrl, meiliKey));
 
         services.AddHostedService<PainelObrigacoes.Infrastructure.Data.Search.MeilisearchIndexSetup>();
+        services.AddHostedService<YearRolloverService>();
 
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IMediatrService, MediatrService>();
 
