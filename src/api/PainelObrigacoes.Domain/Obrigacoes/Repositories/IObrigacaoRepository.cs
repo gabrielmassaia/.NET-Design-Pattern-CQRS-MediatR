@@ -10,6 +10,7 @@ public interface IObrigacaoRepository
     Task<IList<ObrigacaoReadModel>> FindEntreguesByEmpresaAsync(Guid empresaId);
     Task<IList<AlertaModel>> FindAlertasAsync(DateTime dataLimite, int limite = 50);
     Task<DashboardModel> GetDashboardCountsAsync(int ano, int mes);
+    Task<bool> HasObrigacoesInYearAsync(Guid empresaId, int ano);
     void CreateRange(IEnumerable<ObrigacaoModel> models);
     void Update(ObrigacaoModel model);
 }

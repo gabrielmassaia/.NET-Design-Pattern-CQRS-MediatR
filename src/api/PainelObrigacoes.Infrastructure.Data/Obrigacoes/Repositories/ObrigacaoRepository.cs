@@ -80,29 +80,40 @@ public sealed class ObrigacaoRepository : IObrigacaoRepository
 
         var totalEmpresas = await _context.Empresas.CountAsync();
 
-        var counts = await _context.Obrigacoes.AsNoTracking()
+        var currentMonth = await _context.Obrigacoes.AsNoTracking()
             .Where(o => o.Competencia == competencia)
             .GroupBy(o => 1)
             .Select(g => new
             {
                 Total = g.Count(),
                 Entregues = g.Count(o => o.DataEntrega.HasValue),
-                Atrasadas = g.Count(o => !o.DataEntrega.HasValue && o.DataVencimento.Date < hoje)
             })
             .FirstOrDefaultAsync();
 
-        var total = counts?.Total ?? 0;
-        var entregues = counts?.Entregues ?? 0;
-        var atrasadas = counts?.Atrasadas ?? 0;
+        var totalAtrasadas = await _context.Obrigacoes.AsNoTracking()
+            .CountAsync(o => !o.DataEntrega.HasValue && o.DataVencimento.Date < hoje);
+
+        var total = currentMonth?.Total ?? 0;
+        var entregues = currentMonth?.Entregues ?? 0;
 
         return new DashboardModel
         {
             TotalEmpresas = totalEmpresas,
             TotalObrigacoesMes = total,
-            Pendentes = total - entregues - atrasadas,
+            Pendentes = total - entregues,
             Entregues = entregues,
-            Atrasadas = atrasadas
+            Atrasadas = totalAtrasadas
         };
+    }
+
+    public async Task<bool> HasObrigacoesInYearAsync(Guid empresaId, int ano)
+    {
+        var inicio = new DateTime(ano, 1, 1);
+        var fim = new DateTime(ano, 12, 31);
+        return await _context.Obrigacoes
+            .AnyAsync(o => o.EmpresaId == empresaId
+                        && o.Competencia >= inicio
+                        && o.Competencia <= fim);
     }
 
     public void CreateRange(IEnumerable<ObrigacaoModel> models)
