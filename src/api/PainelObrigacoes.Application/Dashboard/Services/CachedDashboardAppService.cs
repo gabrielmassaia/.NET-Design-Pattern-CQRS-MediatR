@@ -20,15 +20,17 @@ public sealed class CachedDashboardAppService : IDashboardAppService
         _cache = cache;
     }
 
-    public async Task<DashboardResultViewModel> GetDashboardAsync(CancellationToken ct = default)
+    public async Task<DashboardResultViewModel> GetDashboardAsync(int? ano = null, int? mes = null, CancellationToken ct = default)
     {
         var now = DateTime.UtcNow;
-        var key = $"dashboard:{now.Year}:{now.Month}";
+        var y = ano ?? now.Year;
+        var m = mes ?? now.Month;
+        var key = $"dashboard:{y}:{m}";
         var cached = await _cache.GetStringAsync(key, ct);
         if (cached is not null)
             return JsonSerializer.Deserialize<DashboardResultViewModel>(cached)!;
 
-        var result = await _inner.GetDashboardAsync(ct);
+        var result = await _inner.GetDashboardAsync(ano, mes, ct);
         await _cache.SetStringAsync(key, JsonSerializer.Serialize(result), _dashboardTtl, ct);
         return result;
     }

@@ -18,9 +18,9 @@ public sealed class DashboardAppService : IDashboardAppService
         _exportService = exportService;
     }
 
-    public async Task<DashboardResultViewModel> GetDashboardAsync(CancellationToken ct = default)
+    public async Task<DashboardResultViewModel> GetDashboardAsync(int? ano = null, int? mes = null, CancellationToken ct = default)
     {
-        var model = await _mediator.SendQuery(new GetDashboardQuery(), ct);
+        var model = await _mediator.SendQuery(new GetDashboardQuery { Ano = ano, Mes = mes }, ct);
         return _mapper.Map<DashboardResultViewModel>(model);
     }
 
@@ -43,7 +43,7 @@ public sealed class DashboardAppService : IDashboardAppService
     public async Task<(byte[] Content, string ContentType, string FileName)> ExportDashboardAsync(
         string formato, CancellationToken ct = default)
     {
-        var dashboard = await GetDashboardAsync(ct);
+        var dashboard = await GetDashboardAsync(ct: ct);
         var alertas = await GetAlertasAsync(ct);
         var now = DateTime.Now;
         return formato.ToLowerInvariant() == "pdf"

@@ -32,10 +32,11 @@ public static class DashboardEndpoints
     }
 
     private static async Task<IResult> GetDashboardAsync(
+        int? ano, int? mes,
         IDashboardAppService appService,
         CancellationToken ct)
     {
-        var result = await appService.GetDashboardAsync(ct);
+        var result = await appService.GetDashboardAsync(ano, mes, ct);
         return result.ToOkResponse();
     }
 
