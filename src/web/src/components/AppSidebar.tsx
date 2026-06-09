@@ -2,6 +2,7 @@ import {
   AlertOutlined,
   CalendarOutlined,
   DashboardOutlined,
+  FileTextOutlined,
   MoonOutlined,
   ShopOutlined,
   SunOutlined,
@@ -13,10 +14,11 @@ import { useAppTheme } from '@/context/ThemeContext';
 const { Sider } = Layout;
 
 const NAV_ITEMS: { path: string; icon: React.ReactNode; label: string }[] = [
-  { path: '/dashboard',  icon: <DashboardOutlined />, label: 'Dashboard'  },
-  { path: '/empresas',   icon: <ShopOutlined />,      label: 'Empresas'   },
-  { path: '/calendario', icon: <CalendarOutlined />,  label: 'Calendário' },
-  { path: '/dashboard?alertas=1', icon: <AlertOutlined />, label: 'Alertas' },
+  { path: '/dashboard',    icon: <DashboardOutlined />, label: 'Dashboard'    },
+  { path: '/empresas',     icon: <ShopOutlined />,      label: 'Empresas'     },
+  { path: '/calendario',   icon: <CalendarOutlined />,  label: 'Calendário'   },
+  { path: '/dashboard?alertas=1', icon: <AlertOutlined />, label: 'Alertas'   },
+  { path: '/documentacao', icon: <FileTextOutlined />,  label: 'Documentação' },
 ];
 
 const GOLD = '#D4A843';

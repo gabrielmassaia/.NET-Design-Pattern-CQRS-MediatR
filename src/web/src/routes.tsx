@@ -1,5 +1,5 @@
 import { Navigate, type RouteObject } from 'react-router-dom';
-import { DashboardPage, EmpresasPage, CalendarioPage } from '@/pages';
+import { DashboardPage, EmpresasPage, CalendarioPage, DocumentacaoPage } from '@/pages';
 import { AppLayout } from '@/App';
 
 export const routes: RouteObject[] = [
@@ -11,6 +11,7 @@ export const routes: RouteObject[] = [
       { path: 'dashboard', element: <DashboardPage /> },
       { path: 'empresas', element: <EmpresasPage /> },
       { path: 'calendario', element: <CalendarioPage /> },
+      { path: 'documentacao', element: <DocumentacaoPage /> },
     ],
   },
 ];
