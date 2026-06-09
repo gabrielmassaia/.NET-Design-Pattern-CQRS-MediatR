@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ledger-deep:  #0F1117;
+  --color-ledger-mid:   #161B27;
+  --color-ledger-card:  #1E2535;
+  --color-gold:         #D4A843;
+  --color-sage:         #4CAF7D;
+  --color-ember:        #E8944A;
+  --color-crimson:      #C0392B;
+  --color-cobalt:       #4A7FC1;
+  --font-mono:          'DM Mono', 'Courier New', monospace;
+  --font-sans:          'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+[data-theme="light"]::-webkit-scrollbar-thumb       { background: rgba(0,0,0,0.14); }
+[data-theme="light"]::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.24); }
+
+/* ── Table row states ──────────────────────────────────────── */
+.row-atrasada > td        { background-color: rgba(192, 57, 43, 0.06) !important; }
+.row-atrasada:hover > td  { background-color: rgba(192, 57, 43, 0.10) !important; }
+.row-entregue > td        { background-color: rgba(76, 175, 125, 0.04) !important; }
+.row-entregue:hover > td  { background-color: rgba(76, 175, 125, 0.08) !important; }
+
+/* ── Table zebra stripes ───────────────────────────────────── */
+.ea-table .ant-table-tbody > tr:nth-child(even):not(.row-atrasada):not(.row-entregue) > td {
+  background-color: rgba(255, 255, 255, 0.018);
+}
+[data-theme="light"] .ea-table .ant-table-tbody > tr:nth-child(even):not(.row-atrasada):not(.row-entregue) > td {
+  background-color: rgba(0, 0, 0, 0.018);
+}
+
+/* ── Ant Design overrides ─────────────────────────────────── */
+.ant-card    { transition: box-shadow 0.15s ease, transform 0.15s ease; }
+.ant-tag     { font-weight: 500; }
+.ant-alert   { border-radius: 10px; }
+.ant-divider { border-color: rgba(255,255,255,0.07) !important; }
+[data-theme="light"] .ant-divider { border-color: rgba(0,0,0,0.08) !important; }
+
+/* ── Typography ───────────────────────────────────────────── */
+h3.ant-typography { font-weight: 700; letter-spacing: -0.3px; }
+
+/* ── Smooth page transitions ──────────────────────────────── */
+.ant-layout-content { animation: fadeIn 0.18s ease; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* ── Noise overlay for dark mode ──────────────────────────── */
+[data-theme="dark"] .layout-noise::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  opacity: 0.028;
+  mix-blend-mode: screen;
+}
+
+/* ── Section divider label ────────────────────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.4;
+  margin-bottom: 14px;
+}
