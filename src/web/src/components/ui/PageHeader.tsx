@@ -1,5 +1,7 @@
-import { Space, Typography, theme } from 'antd';
+import { Grid, Space, Typography, theme } from 'antd';
 import type { ReactNode } from 'react';
+
+const { useBreakpoint } = Grid;
 
 interface PageHeaderProps {
   title: string;
@@ -9,13 +11,17 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
   const { token } = theme.useToken();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
   return (
     <div style={{
       display:       'flex',
+      flexDirection: isMobile ? 'column' : 'row',
       justifyContent:'space-between',
-      alignItems:    'flex-start',
-      marginBottom:  28,
+      alignItems:    isMobile ? 'stretch' : 'flex-start',
+      gap:           isMobile ? 12 : 0,
+      marginBottom:  isMobile ? 20 : 28,
       paddingBottom: 20,
       borderBottom:  `1px solid ${token.colorBorderSecondary}`,
     }}>
@@ -35,7 +41,7 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
         <div>
           <Typography.Title
             level={3}
-            style={{ margin: 0, fontWeight: 700, letterSpacing: '-0.3px', lineHeight: 1.25 }}
+            style={{ margin: 0, fontWeight: 700, letterSpacing: '-0.3px', lineHeight: 1.25, fontSize: isMobile ? 20 : undefined }}
           >
             {title}
           </Typography.Title>
@@ -50,7 +56,7 @@ export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
         </div>
       </div>
       {actions && (
-        <Space style={{ flexShrink: 0, marginTop: 2 }}>{actions}</Space>
+        <Space style={{ flexShrink: 0, marginTop: 2, alignSelf: isMobile ? 'flex-start' : 'center' }}>{actions}</Space>
       )}
     </div>
   );

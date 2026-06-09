@@ -1,11 +1,13 @@
 import { CheckCircleOutlined } from '@ant-design/icons';
-import { Skeleton, theme } from 'antd';
+import { Grid, Skeleton, theme } from 'antd';
 import { useMemo } from 'react';
 import type { Alerta, DashboardData } from '@/domain/types';
 import { DonutChart } from './DonutChart';
 import { LegendChip } from './LegendChip';
 import { UrgencyRow } from './UrgencyRow';
 import { ChartCard } from './ChartCard';
+
+const { useBreakpoint } = Grid;
 
 const COLOR_DANGER  = '#C0392B';
 const COLOR_EMBER   = '#E8944A';
@@ -22,6 +24,8 @@ interface AlertasChartProps {
 
 export function AlertasChart({ alertas, dashboard, loadingAlertas, loadingDash, periodLabel }: AlertasChartProps) {
   const { token } = theme.useToken();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
   const buckets = useMemo(() => ({
     atrasado: alertas.filter((a) => a.diasRestantes < 0).length,
@@ -59,7 +63,7 @@ export function AlertasChart({ alertas, dashboard, loadingAlertas, loadingDash, 
 
   if (loadingDash || loadingAlertas) {
     return (
-      <div style={{ display: 'flex', gap: 16, alignItems: 'stretch' }}>
+      <div style={{ display: 'flex', gap: 16, alignItems: 'stretch', flexWrap: 'wrap' }}>
         {loadingCard}
         {loadingCard}
       </div>
@@ -67,7 +71,7 @@ export function AlertasChart({ alertas, dashboard, loadingAlertas, loadingDash, 
   }
 
   return (
-    <div style={{ display: 'flex', gap: 16, alignItems: 'stretch' }}>
+    <div style={{ display: 'flex', gap: 16, alignItems: 'stretch', flexWrap: 'wrap' }}>
       <ChartCard label={`Situação das Obrigações — ${periodLabel}`}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <div style={{ flexShrink: 0 }}>

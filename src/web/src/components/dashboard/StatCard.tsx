@@ -1,6 +1,8 @@
-import { Skeleton, theme } from 'antd';
+import { Grid, Skeleton, theme } from 'antd';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
+
+const { useBreakpoint } = Grid;
 
 interface StatCardProps {
   title: string;
@@ -13,6 +15,8 @@ interface StatCardProps {
 
 export function StatCard({ title, value, icon, valueStyle, loading = false, periodLabel }: StatCardProps) {
   const { token } = theme.useToken();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   const [hovered, setHovered] = useState(false);
 
   const accentColor = (valueStyle?.color as string) ?? '#4A7FC1';
@@ -21,7 +25,7 @@ export function StatCard({ title, value, icon, valueStyle, loading = false, peri
     background:    token.colorBgElevated,
     border:        `1px solid ${token.colorBorderSecondary}`,
     borderRadius:  14,
-    padding:       '20px 20px 16px',
+    padding:       isMobile ? '14px 14px 12px' : '20px 20px 16px',
     cursor:        'default',
     position:      'relative',
     height:        '100%',
@@ -67,7 +71,7 @@ export function StatCard({ title, value, icon, valueStyle, loading = false, peri
       </div>
       <div style={{
         fontFamily:    "'Plus Jakarta Sans', sans-serif",
-        fontSize:      34,
+        fontSize:      isMobile ? 24 : 34,
         fontWeight:    300,
         lineHeight:    1,
         letterSpacing: '-0.5px',

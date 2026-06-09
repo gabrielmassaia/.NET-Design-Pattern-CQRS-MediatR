@@ -1,6 +1,9 @@
 import { AlertOutlined, CheckCircleOutlined, ClockCircleOutlined, ExclamationCircleOutlined, TeamOutlined } from '@ant-design/icons';
+import { Grid } from 'antd';
 import type { DashboardData } from '@/domain/types';
 import { StatCard } from './StatCard';
+
+const { useBreakpoint } = Grid;
 
 interface KpiGridProps {
   dashboard: DashboardData | undefined;
@@ -19,10 +22,13 @@ const KPI_ITEMS = [
 const ALWAYS_GLOBAL = new Set(['totalEmpresas', 'atrasadas']);
 
 export function KpiGrid({ dashboard, loading, periodLabel }: KpiGridProps) {
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+
   return (
-    <div style={{ display: 'flex', gap: 14, marginBottom: 32, flexWrap: 'nowrap' }}>
+    <div style={{ display: 'flex', gap: 14, marginBottom: 32, flexWrap: 'wrap' }}>
       {KPI_ITEMS.map(({ title, key, icon, color }) => (
-        <div key={title} style={{ flex: 1, minWidth: 0 }}>
+        <div key={title} style={{ flex: isMobile ? '0 0 calc(50% - 7px)' : '1 1 0', minWidth: isMobile ? 0 : 0 }}>
           <StatCard
             title={title}
             value={dashboard?.[key] ?? 0}

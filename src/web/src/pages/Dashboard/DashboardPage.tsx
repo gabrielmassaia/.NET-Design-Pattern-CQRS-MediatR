@@ -1,5 +1,5 @@
 import { CalendarOutlined, DownloadOutlined } from '@ant-design/icons';
-import { Button, DatePicker, message, Tag, theme } from 'antd';
+import { Button, DatePicker, Grid, message, Tag, theme } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -10,9 +10,13 @@ import { dashboardService } from '@/application/services';
 import { ExportFormato } from '@/domain/types';
 import { triggerDownload } from '@/shared/utils/export';
 
+const { useBreakpoint } = Grid;
+
 export default function DashboardPage() {
   const [searchParams] = useSearchParams();
   const showOnlyAlertas = searchParams.get('alertas') === '1';
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
 
   const hoje = dayjs();
   const [mesFiltro, setMesFiltro] = useState(hoje.month() + 1);
@@ -88,45 +92,56 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24 }}>
-        <div>
-          <PageHeader
-            title="Dashboard"
-            subtitle={
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <span>Visão consolidada <Tag style={{ fontSize: 11 }}>{periodLabel}</Tag></span>
-                <DatePicker
-                  picker="month"
-                  value={dayjs(new Date(anoFiltro, mesFiltro - 1))}
-                  onChange={(d) => {
-                    if (d) {
-                      setMesFiltro(d.month() + 1);
-                      setAnoFiltro(d.year());
-                    }
+      <div style={{
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
+        alignItems: isMobile ? 'stretch' : 'flex-start',
+        justifyContent: 'space-between',
+        marginBottom: 24,
+        gap: isMobile ? 12 : 0,
+      }}>
+        <PageHeader
+          title="Dashboard"
+          subtitle={
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+              <span>Visão consolidada <Tag style={{ fontSize: 11 }}>{periodLabel}</Tag></span>
+              <DatePicker
+                picker="month"
+                value={dayjs(new Date(anoFiltro, mesFiltro - 1))}
+                onChange={(d) => {
+                  if (d) {
+                    setMesFiltro(d.month() + 1);
+                    setAnoFiltro(d.year());
+                  }
+                }}
+                allowClear={false}
+                format="MMMM/YYYY"
+                suffixIcon={<CalendarOutlined />}
+                size="small"
+                style={{ width: isMobile ? 140 : 150 }}
+              />
+              {!isPeriodoAtual && (
+                <Tag
+                  color="blue"
+                  style={{ fontSize: 11, cursor: 'pointer', margin: 0 }}
+                  onClick={() => {
+                    setMesFiltro(hoje.month() + 1);
+                    setAnoFiltro(hoje.year());
                   }}
-                  allowClear={false}
-                  format="MMMM/YYYY"
-                  suffixIcon={<CalendarOutlined />}
-                  size="small"
-                  style={{ width: 150 }}
-                />
-                {!isPeriodoAtual && (
-                  <Tag
-                    color="blue"
-                    style={{ fontSize: 11, cursor: 'pointer', margin: 0 }}
-                    onClick={() => {
-                      setMesFiltro(hoje.month() + 1);
-                      setAnoFiltro(hoje.year());
-                    }}
-                  >
-                    Voltar para mês atual
-                  </Tag>
-                )}
-              </div>
-            }
-          />
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
+                >
+                  Voltar para mês atual
+                </Tag>
+              )}
+            </div>
+          }
+        />
+        <div style={{
+          display: 'flex',
+          flexDirection: isMobile ? 'row' : 'column',
+          alignItems: isMobile ? 'flex-start' : 'flex-end',
+          gap: 6,
+          flexShrink: 0,
+        }}>
           <div style={{
             fontFamily:    "'DM Mono', monospace",
             fontSize:      11,
