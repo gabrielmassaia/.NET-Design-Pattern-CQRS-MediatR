@@ -72,6 +72,7 @@ graph TD
 | File | Scope | Description |
 |---|---|---|
 | [backend/rules.md](backend/rules.md) | BE | .NET conventions, patterns, coding standards |
+| [backend/cqrs-conventions.md](backend/cqrs-conventions.md) | BE | CQRS Command vs Query naming rules |
 | [backend/endpoints.md](backend/endpoints.md) | BE | Endpoint patterns and Minimal API conventions |
 | [backend/domain-events.md](backend/domain-events.md) | BE | MediatR INotification events |
 | [backend/response-data.md](backend/response-data.md) | BE | ResponseData envelope contract |

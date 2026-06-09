@@ -119,9 +119,11 @@ O status `NaoAplicavel` permanece modelado no enum `StatusObrigacao` para uma po
 
 ## Geração de Obrigações ao Cadastrar Empresa
 
-Ao cadastrar uma nova empresa, o `CreateEmpresaCommandHandler` chama `ITributaryRulesEngine.GenerateAnoCompleto()`, que gera obrigações para **todos os 12 meses do ano-calendário corrente**.
+Ao cadastrar uma nova empresa, o `CreateEmpresaCommandHandler` gera obrigações **a partir do mês atual** até dezembro, utilizando `ITributaryRulesEngine.GenerateObrigacoes()` em loop.
 
-Isso significa que, mesmo que a empresa seja cadastrada em junho, obrigações de janeiro a maio também serão geradas (competências passadas).
+Isso significa que, se a empresa for cadastrada em junho, apenas obrigações de junho a dezembro serão geradas — **nenhuma competência passada é criada**.
+
+> O `DatabaseSeeder` (seed de demonstração) continua gerando o ano completo intencionalmente, para demonstrar o dashboard com dados de obrigações atrasadas e entregues.
 
 ### Justificativa para o escopo do case
 
@@ -129,12 +131,20 @@ Isso significa que, mesmo que a empresa seja cadastrada em junho, obrigações d
 2. **Calendário completo** — o usuário pode navegar por todo o ano e ver o planejamento fiscal.
 3. **Sem risco fiscal** — o sistema é um painel de controle/consulta, não um sistema de declaração. A geração retroativa não causa multas ou duplicidade.
 
+## Rollover Anual Automático
+
+O `YearRolloverService` (implementado como `IHostedService`) garante que empresas ativas sempre tenham obrigações para o ano corrente:
+
+- Executa **na inicialização** da aplicação
+- Verifica cada empresa ativa: se não possui obrigações para o ano corrente, gera o **ano completo** via `GenerateAnoCompleto()`
+- Repetido a cada **24 horas** via timer
+- Útil quando o sistema fica rodando continuamente e o ano vira (ex.: 31/12 → 01/01)
+
 ### Cenário produtivo
 
 Em produção, esta regra poderia evoluir para:
 
 - Aceitar uma **competência inicial** configurável por empresa (ex.: mês de abertura ou mês de adesão ao sistema).
-- Gerar apenas a partir do mês de cadastro, ignorando competências anteriores.
 - Oferecer uma tela de "gerar obrigações para o próximo ano" ao invés de gerar automaticamente.
 
 ---

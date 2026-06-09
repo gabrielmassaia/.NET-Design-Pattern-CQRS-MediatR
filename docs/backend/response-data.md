@@ -122,8 +122,7 @@ public class ResponseData<T>
 
 ## How It Works
 
-1. **Endpoints** return raw data via `ResultExtensions`: `return result.ToOkResponse()`
-2. **`ResponseDataFilter`** (IResultFilter) intercepts success responses and wraps them in `ResponseData<object>.Ok()`
-3. **`ExceptionMiddleware`** catches exceptions and returns `ResponseData<T>.Fail()` with appropriate error code and status
+1. **Endpoints** return raw data wrapped via `ResultExtensions.ToOkResponse()`: `return result.ToOkResponse()`
+2. **`ExceptionMiddleware`** catches exceptions and returns `ResponseData<T>.Fail()` with appropriate error code and status
 
 > **Note:** Only 2xx responses are wrapped. Error/failure responses are handled by the `ExceptionMiddleware` directly.

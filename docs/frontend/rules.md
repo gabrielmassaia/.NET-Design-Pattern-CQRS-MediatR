@@ -50,20 +50,31 @@ scope: fe
 
 ---
 
-## Data Fetching Pattern
+## Service Layer Pattern
+
+Services are **class-based**, extending `BaseService<TEntity, TCreate, TUpdate>`:
 
 ```typescript
 // Service (empresa.service.ts)
-export async function findAll(): Promise<Empresa[]> {
-  const { data } = await api.get<ApiResponse<Empresa[]>>('/api/empresas');
-  return data.data;
+export class EmpresaService extends BaseService<Empresa, CreateEmpresaPayload> {
+  protected readonly resource = '/api/empresas';
+
+  async search(query: string): Promise<Empresa[]> {
+    return this.getRequest<Empresa[]>(`${this.resource}/search`, { q: query });
+  }
 }
 
+export const empresaService = new EmpresaService();
+```
+
+## Data Fetching Pattern
+
+```typescript
 // Hook (useEmpresas.ts)
 export function useEmpresas() {
   return useQuery({
-    queryKey: ['empresas'],
-    queryFn: empresaService.findAll,
+    queryKey: empresasKeys.all,
+    queryFn: () => empresaService.getAll(),
     staleTime: 30_000,
   });
 }
@@ -72,8 +83,8 @@ export function useEmpresas() {
 export function useCreateEmpresa() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: empresaService.create,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['empresas'] }),
+    mutationFn: (payload: CreateEmpresaPayload) => empresaService.create(payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: empresasKeys.all }),
   });
 }
 

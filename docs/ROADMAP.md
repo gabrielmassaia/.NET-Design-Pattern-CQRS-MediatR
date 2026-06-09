@@ -34,7 +34,10 @@ A web-based system that replaces fragile spreadsheets for tracking accessory tax
 | Docker Compose | ✅ Complete | 5 services: DB, Redis, Meilisearch, API, Web |
 | Exception Middleware | ✅ Complete | Global error handling (Validation → 400, Conflict → 409, NotFound → 404) |
 | Domain Events | ✅ Complete | MediatR INotification for search indexing side effects |
-| Test Suite | ✅ Complete | 24 unit tests across Domain and Application layers |
+| Smart Obligation Generation | ✅ Complete | Geração a partir do mês atual ao cadastrar empresa, evitando atrasos artificiais |
+| Year Rollover | ✅ Complete | `YearRolloverService` gera automaticamente obrigações do novo ano para todas as empresas ativas |
+| Backend Tests | ✅ Complete | 90 unit tests across Domain, Application, and Infrastructure layers |
+| Frontend Tests | ✅ Complete | 33+ unit tests across components, hooks, services, and utils |
 
 ---
 
@@ -46,7 +49,6 @@ A web-based system that replaces fragile spreadsheets for tracking accessory tax
 | Year Selection in Calendar | Medium | Allow navigating across years |
 | Export to Excel/PDF | Low | Export obligation lists for offline use |
 | Multi-User Support | Low | Future: authentication, company assignment |
-| Fiscal Year Rollover | Low | Auto-generate next year's obligations |
 | E2E Tests | Low | Playwright/Cypress tests for frontend flows |
 | CI/CD Pipeline | Low | GitHub Actions for automated build + test |
 | Frontend Tests | Low | Vitest + React Testing Library setup |

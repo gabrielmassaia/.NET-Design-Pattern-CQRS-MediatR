@@ -34,8 +34,10 @@ Each feature is a folder with:
 
 ```
 {Domain}/{Feature}/
-├── Commands/           → CreateXCommand : Command<TResult>
+├── Commands/           → CreateXCommand : Command<TResult> (write operations)
+├── Queries/            → FindXQuery : Query<TResult> (read operations)
 ├── CommandHandlers/    → CreateXCommandHandler : IRequestHandler<>
+├── QueryHandlers/      → FindXQueryHandler : IRequestHandler<>
 ├── Models/             → XModel : ModelBase (entity), XReadModel (queries)
 ├── Repositories/       → IXRepository (interface only)
 ├── Services/           → IXService (domain logic)
@@ -45,9 +47,11 @@ Each feature is a folder with:
 
 Rules:
 - **MUST NOT** reference Application, Infrastructure, or HTTP
-- **MUST** keep Commands/Handlers/Validators together per feature
-- **MUST** use `Command<TResult>` base class for all Commands
-- **MUST** implement `IRequestHandler<TCommand, TResult>` for all Handlers
+- **MUST** keep Commands/Queries/Handlers/Validators together per feature
+- **MUST** use `Command<TResult>` base class for all Commands (writes)
+- **MUST** use `Query<TResult>` base class for all Queries (reads)
+- **MUST** implement `IRequestHandler<TCommand, TResult>` for Command Handlers
+- **MUST** implement `IRequestHandler<TQuery, TResult>` for Query Handlers
 
 ### Application Layer
 

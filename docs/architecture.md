@@ -203,12 +203,14 @@ Each business feature follows the same folder structure across all layers:
 
 ```
 Domain/{Feature}/
-├── Commands/           → CreateXCommand, FindXCommand, DeleteXCommand
-├── CommandHandlers/    → CreateXCommandHandler, FindXCommandHandler
+├── Commands/           → CreateXCommand, DeleteXCommand : Command<TResult> (writes)
+├── Queries/            → FindXQuery, GetXQuery : Query<TResult> (reads)
+├── CommandHandlers/    → CreateXCommandHandler, DeleteXCommandHandler
+├── QueryHandlers/      → FindXQueryHandler, GetXQueryHandler
 ├── Models/             → XModel (domain), XReadModel (queries)
 ├── Repositories/       → IXRepository (interface only)
 ├── Services/           → IXService (domain logic interfaces)
-├── Validations/        → CreateXCommandValidation
+├── Validations/        → CreateXCommandValidation, FindXQueryValidation
 └── Events/             → XCreatedEvent, XDeletedEvent (INotification)
 
 Application/{Feature}/

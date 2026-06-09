@@ -62,13 +62,19 @@ vi.mocked(useQuery).mockReturnValue({
 
 ## File Organization
 
+Tests are **co-located** next to source files for easy discoverability:
+
 ```
-src/__tests__/
+src/
 ├── components/
+│   ├── StatusBadge.tsx
 │   ├── StatusBadge.test.tsx
+│   ├── EmpresaForm.tsx
 │   └── EmpresaForm.test.tsx
 ├── hooks/
-│   └── useEmpresas.test.ts
-└── utils/
-    └── formatters.test.ts
+│   ├── useEmpresas.ts
+│   └── useEmpresas.test.tsx
+├── utils/
+│   ├── formatters.ts
+│   └── formatters.test.ts
 ```

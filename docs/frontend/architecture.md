@@ -133,12 +133,15 @@ sequenceDiagram
 
 ```
 src/web/src/
-├── api/           → axios.ts (base instance + interceptors)
-├── services/      → HTTP calls per feature
+├── infrastructure/http/ → axios.ts (base instance + interceptors)
+├── application/services/ → HTTP calls per feature (class-based services)
 ├── hooks/         → TanStack Query hooks
 ├── pages/         → Route-level components
 ├── components/    → Reusable UI components
-├── types/         → TypeScript interfaces and enums
-├── utils/         → Formatters and helpers
-└── theme/         → Ant Design theme config
+├── domain/types/  → TypeScript interfaces and enums
+├── shared/        → BaseService, ApiResponse, utilities
+├── lib/           → Query key factories
+├── context/       → Theme context
+├── theme/         → Ant Design theme config
+└── utils/         → Formatters and helpers
 ```

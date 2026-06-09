@@ -19,10 +19,12 @@ PainelObrigacoes.Tests/
 │   ├── Engine/
 │   │   └── TributaryRulesEngineTests.cs
 │   ├── Empresas/
-│   │   └── DeleteEmpresaCommandHandlerTests.cs
+│   │   ├── DeleteEmpresaCommandHandlerTests.cs
+│   │   ├── FindEmpresasQueryHandlerTests.cs
+│   │   └── SearchEmpresasQueryHandlerTests.cs
 │   └── Obrigacoes/
 │       ├── RegistrarEntregaCommandHandlerTests.cs
-│       └── FindObrigacoesCommandHandlerTests.cs
+│       └── FindObrigacoesQueryHandlerTests.cs
 ├── Application/
 │   └── EmpresaAppServiceTests.cs
 └── Api/
