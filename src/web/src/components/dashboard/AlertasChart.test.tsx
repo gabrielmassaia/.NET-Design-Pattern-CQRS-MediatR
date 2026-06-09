@@ -11,6 +11,8 @@ describe('AlertasChart', () => {
     atrasadas: 2,
   };
 
+  const defaultProps = { periodLabel: '06/26' };
+
   it('renders loading skeleton', () => {
     const { container } = renderWithProviders(
       <AlertasChart
@@ -18,6 +20,7 @@ describe('AlertasChart', () => {
         dashboard={undefined}
         loadingAlertas
         loadingDash
+        {...defaultProps}
       />,
     );
     expect(container.querySelector('.ant-skeleton')).toBeInTheDocument();
@@ -30,10 +33,11 @@ describe('AlertasChart', () => {
         dashboard={defaultDashboard}
         loadingAlertas={false}
         loadingDash={false}
+        {...defaultProps}
       />,
     );
     expect(
-      screen.getByText('Nenhum alerta nos próximos 30 dias'),
+      screen.getByText('Nenhuma obrigação pendente ou atrasada'),
     ).toBeInTheDocument();
   });
 
@@ -49,6 +53,7 @@ describe('AlertasChart', () => {
         dashboard={defaultDashboard}
         loadingAlertas={false}
         loadingDash={false}
+        {...defaultProps}
       />,
     );
     expect(screen.getByText('Em atraso')).toBeInTheDocument();
@@ -67,6 +72,7 @@ describe('AlertasChart', () => {
         dashboard={defaultDashboard}
         loadingAlertas={false}
         loadingDash={false}
+        {...defaultProps}
       />,
     );
     const totalAlertas = screen.getAllByText('1');
@@ -80,6 +86,7 @@ describe('AlertasChart', () => {
         dashboard={{ totalEmpresas: 5, totalObrigacoesMes: 0, pendentes: 0, entregues: 0, atrasadas: 0 }}
         loadingAlertas={false}
         loadingDash={false}
+        {...defaultProps}
       />,
     );
     expect(screen.getByText('Nenhuma obrigação no mês')).toBeInTheDocument();

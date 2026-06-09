@@ -5,6 +5,7 @@ import { StatCard } from './StatCard';
 interface KpiGridProps {
   dashboard: DashboardData | undefined;
   loading: boolean;
+  periodLabel: string;
 }
 
 const KPI_ITEMS = [
@@ -15,7 +16,9 @@ const KPI_ITEMS = [
   { title: 'Entregues',           key: 'entregues' as const,   icon: <CheckCircleOutlined />,       color: '#4CAF7D' },
 ];
 
-export function KpiGrid({ dashboard, loading }: KpiGridProps) {
+const ALWAYS_GLOBAL = new Set(['totalEmpresas', 'atrasadas']);
+
+export function KpiGrid({ dashboard, loading, periodLabel }: KpiGridProps) {
   return (
     <div style={{ display: 'flex', gap: 14, marginBottom: 32, flexWrap: 'nowrap' }}>
       {KPI_ITEMS.map(({ title, key, icon, color }) => (
@@ -26,6 +29,7 @@ export function KpiGrid({ dashboard, loading }: KpiGridProps) {
             icon={icon}
             valueStyle={{ color }}
             loading={loading}
+            periodLabel={ALWAYS_GLOBAL.has(key) ? 'total acumulado' : periodLabel}
           />
         </div>
       ))}

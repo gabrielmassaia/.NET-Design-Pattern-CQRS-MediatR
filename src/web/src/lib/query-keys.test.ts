@@ -26,8 +26,8 @@ describe('obrigacoesKeys', () => {
 });
 
 describe('dashboardKeys', () => {
-  it('dashboard returns base key', () => {
-    expect(dashboardKeys.dashboard).toEqual(['dashboard']);
+  it('dashboard returns key with year/month', () => {
+    expect(dashboardKeys.dashboard(2026, 6)).toEqual(['dashboard', 2026, 6]);
   });
 
   it('alertas returns base key', () => {

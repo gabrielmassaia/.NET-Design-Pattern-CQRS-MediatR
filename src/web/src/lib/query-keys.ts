@@ -13,6 +13,6 @@ export const obrigacoesKeys = {
 };
 
 export const dashboardKeys = {
-  dashboard: ['dashboard'] as const,
+  dashboard: (ano: number, mes: number) => ['dashboard', ano, mes] as const,
   alertas: ['alertas'] as const,
 };

@@ -6,8 +6,12 @@ import { ExportFormato } from '@/domain/types';
 class DashboardService extends BaseService<never> {
   protected readonly resource = '/api/dashboard';
 
-  async getDashboard(): Promise<DashboardData> {
-    return getApiData<DashboardData>(this.resource);
+  async getDashboard(ano?: number, mes?: number): Promise<DashboardData> {
+    const params = new URLSearchParams();
+    if (ano) params.set('ano', String(ano));
+    if (mes) params.set('mes', String(mes));
+    const qs = params.toString();
+    return getApiData<DashboardData>(qs ? `${this.resource}?${qs}` : this.resource);
   }
 
   async getAlertas(): Promise<Alerta[]> {

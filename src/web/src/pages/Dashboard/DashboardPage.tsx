@@ -1,5 +1,5 @@
-import { DownloadOutlined } from '@ant-design/icons';
-import { Button, message, theme } from 'antd';
+import { CalendarOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Button, DatePicker, message, Tag, theme } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -14,12 +14,20 @@ export default function DashboardPage() {
   const [searchParams] = useSearchParams();
   const showOnlyAlertas = searchParams.get('alertas') === '1';
 
-  const { data: dashboard, isLoading: loadingDash } = useDashboard();
+  const hoje = dayjs();
+  const [mesFiltro, setMesFiltro] = useState(hoje.month() + 1);
+  const [anoFiltro, setAnoFiltro] = useState(hoje.year());
+
+  const { data: dashboard, isLoading: loadingDash } = useDashboard(anoFiltro, mesFiltro);
   const { data: alertas = [], isLoading: loadingAlertas } = useAlertas();
   const [isExporting, setIsExporting] = useState(false);
   const { token } = theme.useToken();
 
   const timestamp = dayjs().format('HH:mm');
+
+  const periodLabel = `${String(mesFiltro).padStart(2, '0')}/${String(anoFiltro).slice(-2)}`;
+
+  const isPeriodoAtual = anoFiltro === hoje.year() && mesFiltro === hoje.month() + 1;
 
   async function handleExportAlertas(formato: ExportFormato) {
     setIsExporting(true);
@@ -82,7 +90,38 @@ export default function DashboardPage() {
         <div>
           <PageHeader
             title="Dashboard"
-            subtitle="Visão consolidada do mês atual"
+            subtitle={
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <span>Visão consolidada <Tag style={{ fontSize: 11 }}>{periodLabel}</Tag></span>
+                <DatePicker
+                  picker="month"
+                  value={dayjs(new Date(anoFiltro, mesFiltro - 1))}
+                  onChange={(d) => {
+                    if (d) {
+                      setMesFiltro(d.month() + 1);
+                      setAnoFiltro(d.year());
+                    }
+                  }}
+                  allowClear={false}
+                  format="MMMM/YYYY"
+                  suffixIcon={<CalendarOutlined />}
+                  size="small"
+                  style={{ width: 150 }}
+                />
+                {!isPeriodoAtual && (
+                  <Tag
+                    color="blue"
+                    style={{ fontSize: 11, cursor: 'pointer', margin: 0 }}
+                    onClick={() => {
+                      setMesFiltro(hoje.month() + 1);
+                      setAnoFiltro(hoje.year());
+                    }}
+                  >
+                    Voltar para mês atual
+                  </Tag>
+                )}
+              </div>
+            }
           />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
@@ -90,7 +129,6 @@ export default function DashboardPage() {
             fontFamily:    "'DM Mono', monospace",
             fontSize:      11,
             color:         token.colorTextTertiary,
-            paddingTop:    4,
             letterSpacing: '0.06em',
           }}>
             Atualizado às {timestamp}
@@ -99,7 +137,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <KpiGrid dashboard={dashboard} loading={loadingDash} />
+      <KpiGrid dashboard={dashboard} loading={loadingDash} periodLabel={periodLabel} />
 
       <div style={{
         display:     'flex',
@@ -118,6 +156,7 @@ export default function DashboardPage() {
         dashboard={dashboard}
         loadingAlertas={loadingAlertas}
         loadingDash={loadingDash}
+        periodLabel={periodLabel}
       />
     </>
   );

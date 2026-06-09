@@ -17,9 +17,10 @@ interface AlertasChartProps {
   dashboard: DashboardData | undefined;
   loadingAlertas: boolean;
   loadingDash: boolean;
+  periodLabel: string;
 }
 
-export function AlertasChart({ alertas, dashboard, loadingAlertas, loadingDash }: AlertasChartProps) {
+export function AlertasChart({ alertas, dashboard, loadingAlertas, loadingDash, periodLabel }: AlertasChartProps) {
   const { token } = theme.useToken();
 
   const buckets = useMemo(() => ({
@@ -67,7 +68,7 @@ export function AlertasChart({ alertas, dashboard, loadingAlertas, loadingDash }
 
   return (
     <div style={{ display: 'flex', gap: 16, alignItems: 'stretch' }}>
-      <ChartCard label="Situação das Obrigações">
+      <ChartCard label={`Situação das Obrigações — ${periodLabel}`}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
           <div style={{ flexShrink: 0 }}>
             <DonutChart segments={donutSegs} total={total} />
@@ -133,7 +134,7 @@ export function AlertasChart({ alertas, dashboard, loadingAlertas, loadingDash }
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: 32, gap: 10 }}>
             <CheckCircleOutlined style={{ fontSize: 32, color: COLOR_SAGE, opacity: 0.8 }} />
             <span style={{ fontSize: 13, color: token.colorTextTertiary }}>
-              Nenhum alerta nos próximos 30 dias
+              Nenhuma obrigação pendente ou atrasada
             </span>
           </div>
         ) : (
@@ -149,6 +150,9 @@ export function AlertasChart({ alertas, dashboard, loadingAlertas, loadingDash }
               <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 18, fontWeight: 400, color: token.colorText }}>
                 {alertas.length}
               </span>
+            </div>
+            <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: token.colorTextTertiary, marginTop: 8, textAlign: 'right', opacity: 0.7 }}>
+              obrigações atrasadas + vencimento ≤ 30 dias
             </div>
           </div>
         )}

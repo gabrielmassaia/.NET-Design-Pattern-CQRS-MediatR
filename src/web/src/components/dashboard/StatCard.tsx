@@ -8,9 +8,10 @@ interface StatCardProps {
   icon: ReactNode;
   valueStyle?: React.CSSProperties;
   loading?: boolean;
+  periodLabel?: string;
 }
 
-export function StatCard({ title, value, icon, valueStyle, loading = false }: StatCardProps) {
+export function StatCard({ title, value, icon, valueStyle, loading = false, periodLabel }: StatCardProps) {
   const { token } = theme.useToken();
   const [hovered, setHovered] = useState(false);
 
@@ -81,7 +82,7 @@ export function StatCard({ title, value, icon, valueStyle, loading = false }: St
         color:      token.colorTextTertiary,
         opacity:    0.8,
       }}>
-        {value > 0 ? 'este mês' : '— sem dados'}
+        {periodLabel ?? (value > 0 ? 'este mês' : '— sem dados')}
       </div>
     </div>
   );
