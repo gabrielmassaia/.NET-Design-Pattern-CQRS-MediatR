@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj
+
+      - name: Build
+        run: dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj --no-restore
+
+      - name: Run unit tests with coverage
+        run: dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+          --no-build
+          --collect:"XPlat Code Coverage"
+          --settings coverlet.runsettings
+
+      - name: Run integration tests
+        run: dotnet test src/api/PainelObrigacoes.IntegrationTests/PainelObrigacoes.IntegrationTests.csproj --no-build
+        continue-on-error: true
+
+  frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src/web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Build
+        run: npm run build

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura,json,lcov</Format>
+          <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
+          <ExcludeByFile>**/Migrations/*.cs</ExcludeByFile>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
+          <Exclude>
+            [PainelObrigacoes.Api]Program.*,
+            [PainelObrigacoes.Infrastructure.CrossCutting.IoC]*,
+            [PainelObrigacoes.Infrastructure.Data]*Migrations*,
+            [PainelObrigacoes.Infrastructure.Data]*Entities*,
+            [PainelObrigacoes.Infrastructure.Data]*Configurations*
+          </Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
