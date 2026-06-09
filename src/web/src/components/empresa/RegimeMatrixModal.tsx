@@ -1,6 +1,8 @@
-import { Modal, Table, Tag } from 'antd';
+import { Grid, Modal, Table, Tag } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
+
+const { useBreakpoint } = Grid;
 
 interface ObligationInfo { code: string; name: string; period: string; }
 
@@ -69,6 +71,9 @@ const dataSource: MatrixRow[] = ALL_OBLIGATIONS.map((obl) => {
 interface Props { open: boolean; onClose: () => void; }
 
 export function RegimeMatrixModal({ open, onClose }: Props) {
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+
   return (
     <Modal
       title={
@@ -80,7 +85,7 @@ export function RegimeMatrixModal({ open, onClose }: Props) {
       open={open}
       onCancel={onClose}
       footer={null}
-      width={900}
+      width={isMobile ? '100%' : 900}
     >
       <Table
         dataSource={dataSource}

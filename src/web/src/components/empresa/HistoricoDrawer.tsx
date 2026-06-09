@@ -1,8 +1,10 @@
 import { CheckCircleOutlined } from '@ant-design/icons';
-import { Drawer, Empty, Spin, Timeline, Typography, theme } from 'antd';
+import { Drawer, Empty, Grid, Spin, Timeline, Typography, theme } from 'antd';
 import { useHistorico } from '@/hooks/useObrigacoes';
 import type { Empresa } from '@/domain/types';
 import { formatDate } from '@/utils/formatters';
+
+const { useBreakpoint } = Grid;
 
 interface HistoricoDrawerProps {
   empresa: Empresa | null;
@@ -10,6 +12,8 @@ interface HistoricoDrawerProps {
 }
 
 export function HistoricoDrawer({ empresa, onClose }: HistoricoDrawerProps) {
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   const { data: historico = [], isLoading } = useHistorico(empresa?.id ?? '');
   const { token } = theme.useToken();
 
@@ -30,7 +34,7 @@ export function HistoricoDrawer({ empresa, onClose }: HistoricoDrawerProps) {
       }
       open={!!empresa}
       onClose={onClose}
-      width={480}
+      width={isMobile ? '100%' : 480}
     >
       {isLoading && (
         <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 60 }}>

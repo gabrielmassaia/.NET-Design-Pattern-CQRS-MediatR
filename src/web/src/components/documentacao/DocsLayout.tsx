@@ -1,7 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import React from 'react';
-import { BookOutlined } from '@ant-design/icons';
+import { BookOutlined, MenuOutlined } from '@ant-design/icons';
+import { Drawer, Grid, Select } from 'antd';
 import { useAppTheme } from '@/context/ThemeContext';
+
+const { useBreakpoint } = Grid;
 
 interface Section {
   id: string;
@@ -33,47 +36,84 @@ interface DocsLayoutProps {
 
 export function DocsLayout({ banner, children }: DocsLayoutProps) {
   const { appTheme } = useAppTheme();
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
   const isDark = appTheme === 'dark';
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const sidebarW = 260;
 
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    if (isMobile) setDrawerOpen(false);
+  };
+
+  const sectionOptions = SECTIONS.map((s) => ({
+    value: s.id,
+    label: `${s.icon} ${s.label}`,
+  }));
+
   return (
-    <div style={{ display: 'flex', height: 'calc(100vh - 120px)', overflow: 'hidden', borderRadius: 14 }}>
-      <aside style={{
-        width: sidebarW,
-        minWidth: sidebarW,
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRight: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
-      }}>
-        <div style={{
-          fontFamily: "'DM Mono', monospace",
-          fontSize: 12,
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          letterSpacing: '0.12em',
-          color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
-          marginBottom: 16,
-          paddingTop: 4,
-          textAlign: 'center',
-          flexShrink: 0,
-        }}>
-          <BookOutlined style={{ marginRight: 6 }} />
-          Documentação
+    <div style={{
+      display: 'flex',
+      flexDirection: isMobile ? 'column' : 'row',
+      height: isMobile ? 'auto' : 'calc(100vh - 120px)',
+      overflow: isMobile ? 'visible' : 'hidden',
+      borderRadius: 14,
+    }}>
+      {/* Mobile section select */}
+      {isMobile && (
+        <div style={{ marginBottom: 16 }}>
+          <Select
+            showSearch
+            placeholder="Navegar para seção..."
+            options={sectionOptions}
+            onChange={scrollTo}
+            style={{ width: '100%' }}
+            size="middle"
+          />
         </div>
-        <nav style={{ flex: 1, overflowY: 'auto', paddingRight: 4 }}>
-          {SECTIONS.map(({ id, label, icon }) => (
-            <DocsNavItem key={id} sectionId={id} label={label} icon={icon} isDark={isDark} />
-          ))}
-        </nav>
-      </aside>
+      )}
+
+      {/* Desktop sidebar — hidden on mobile */}
+      {!isMobile && (
+        <aside style={{
+          width: sidebarW,
+          minWidth: sidebarW,
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          borderRight: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
+        }}>
+          <div style={{
+            fontFamily: "'DM Mono', monospace",
+            fontSize: 12,
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            letterSpacing: '0.12em',
+            color: isDark ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
+            marginBottom: 16,
+            paddingTop: 4,
+            textAlign: 'center',
+            flexShrink: 0,
+          }}>
+            <BookOutlined style={{ marginRight: 6 }} />
+            Documentação
+          </div>
+          <nav style={{ flex: 1, overflowY: 'auto', paddingRight: 4 }}>
+            {SECTIONS.map(({ id, label, icon }) => (
+              <DocsNavItem key={id} sectionId={id} label={label} icon={icon} isDark={isDark} />
+            ))}
+          </nav>
+        </aside>
+      )}
 
       <main style={{
         flex: 1,
-        overflowY: 'auto',
+        overflowY: isMobile ? 'visible' : 'auto',
         overflowX: 'hidden',
-        padding: '0 40px 48px 40px',
+        padding: isMobile ? '0 0 32px 0' : '0 40px 48px 40px',
       }}>
         {banner}
         {children}
