@@ -29,6 +29,7 @@ export function ExportButton({ params, disabled = false }: ExportButtonProps) {
 
   return (
     <Button.Group>
+      <Button icon={<DownloadOutlined />} loading={isExporting} disabled={disabled} onClick={() => handleExport(ExportFormato.XLSX)}>XLSX</Button>
       <Button icon={<DownloadOutlined />} loading={isExporting} disabled={disabled} onClick={() => handleExport(ExportFormato.CSV)}>CSV</Button>
       <Button icon={<DownloadOutlined />} loading={isExporting} disabled={disabled} onClick={() => handleExport(ExportFormato.PDF)}>PDF</Button>
     </Button.Group>

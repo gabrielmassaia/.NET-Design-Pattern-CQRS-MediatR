@@ -20,10 +20,11 @@ describe('ExportButton', () => {
     vi.clearAllMocks();
   });
 
-  it('renders CSV and PDF buttons', () => {
+  it('renders XLSX, CSV and PDF buttons', () => {
     renderWithProviders(
       <ExportButton params={{ empresaId: '1', ano: 2026, mes: 6 }} disabled={false} />,
     );
+    expect(screen.getByText('XLSX')).toBeInTheDocument();
     expect(screen.getByText('CSV')).toBeInTheDocument();
     expect(screen.getByText('PDF')).toBeInTheDocument();
   });
@@ -32,8 +33,28 @@ describe('ExportButton', () => {
     renderWithProviders(
       <ExportButton params={{ empresaId: '1', ano: 2026, mes: 6 }} disabled />,
     );
+    expect(screen.getByText('XLSX').closest('button')).toBeDisabled();
     expect(screen.getByText('CSV').closest('button')).toBeDisabled();
     expect(screen.getByText('PDF').closest('button')).toBeDisabled();
+  });
+
+  it('calls export and triggers download on XLSX click', async () => {
+    const blob = new Blob(['xlsx']);
+    mockExportObrigacoes.mockResolvedValueOnce(blob);
+
+    const user = userEvent.setup();
+    renderWithProviders(
+      <ExportButton params={{ empresaId: '1', ano: 2026, mes: 6 }} disabled={false} />,
+    );
+
+    await user.click(screen.getByText('XLSX'));
+
+    await waitFor(() => {
+      expect(mockExportObrigacoes).toHaveBeenCalledWith({
+        empresaId: '1', ano: 2026, mes: 6, formato: ExportFormato.XLSX,
+      });
+      expect(mockTriggerDownload).toHaveBeenCalledWith(blob, 'obrigacoes-2026-06.xlsx');
+    });
   });
 
   it('calls export and triggers download on CSV click', async () => {

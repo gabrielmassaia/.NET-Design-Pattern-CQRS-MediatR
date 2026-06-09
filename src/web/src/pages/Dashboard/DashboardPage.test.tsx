@@ -45,6 +45,8 @@ describe('DashboardPage', () => {
 
   it('renders export buttons', async () => {
     renderWithProviders(<DashboardPage />);
+    const xlsxButtons = await screen.findAllByText('XLSX');
+    expect(xlsxButtons.length).toBeGreaterThan(0);
     const csvButtons = await screen.findAllByText('CSV');
     expect(csvButtons.length).toBeGreaterThan(0);
     const pdfButtons = await screen.findAllByText('PDF');

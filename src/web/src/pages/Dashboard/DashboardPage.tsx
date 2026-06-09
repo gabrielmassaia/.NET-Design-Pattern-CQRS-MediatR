@@ -59,6 +59,7 @@ export default function DashboardPage() {
 
   const alertasExportButtons = (
     <Button.Group>
+      <Button icon={<DownloadOutlined />} loading={isExporting} disabled={!hasAlertas} onClick={() => handleExportAlertas(ExportFormato.XLSX)}>XLSX</Button>
       <Button icon={<DownloadOutlined />} loading={isExporting} disabled={!hasAlertas} onClick={() => handleExportAlertas(ExportFormato.CSV)}>CSV</Button>
       <Button icon={<DownloadOutlined />} loading={isExporting} disabled={!hasAlertas} onClick={() => handleExportAlertas(ExportFormato.PDF)}>PDF</Button>
     </Button.Group>
@@ -79,6 +80,7 @@ export default function DashboardPage() {
 
   const dashboardExportButtons = (
     <Button.Group>
+      <Button icon={<DownloadOutlined />} loading={isExporting} disabled={!hasAlertas} onClick={() => handleExportDashboard(ExportFormato.XLSX)}>XLSX</Button>
       <Button icon={<DownloadOutlined />} loading={isExporting} disabled={!hasAlertas} onClick={() => handleExportDashboard(ExportFormato.CSV)}>CSV</Button>
       <Button icon={<DownloadOutlined />} loading={isExporting} disabled={!hasAlertas} onClick={() => handleExportDashboard(ExportFormato.PDF)}>PDF</Button>
     </Button.Group>
