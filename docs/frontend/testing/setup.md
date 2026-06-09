@@ -11,36 +11,40 @@ scope: fe
 
 ---
 
-## Recommended Setup
+## Tech Stack
 
-```bash
-cd src/web
+| Tool | Version | Purpose |
+|---|---|---|
+| Vitest | 4.1.8 | Test runner |
+| @testing-library/react | 16.3 | Component rendering |
+| @testing-library/jest-dom | 6.9 | DOM matchers |
+| @testing-library/user-event | 14.6 | User interaction simulation |
+| MSW | 2.14 | HTTP mocking |
+| @vitest/coverage-v8 | 4.1 | Code coverage (v8) |
 
-# Install test dependencies
-npm install --save-dev vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
-```
+---
 
-### vite.config.ts
+## Configuration (vite.config.ts)
 
 ```typescript
-/// <reference types="vitest" />
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-
-export default defineConfig({
-  plugins: [react()],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.ts',
+test: {
+  environment: 'jsdom',
+  globals: true,
+  setupFiles: './src/test/setup.ts',
+  css: true,
+  coverage: {
+    provider: 'v8',
+    reporter: ['text', 'html', 'lcov'],
+    exclude: [
+      'src/main.tsx',
+      'src/vite-env.d.ts',
+      '**/*.d.ts',
+      '**/types/**',
+      '**/mocks/**',
+      '**/test/**',
+    ],
   },
-});
-```
-
-### src/test/setup.ts
-
-```typescript
-import '@testing-library/jest-dom';
+},
 ```
 
 ---
@@ -48,44 +52,137 @@ import '@testing-library/jest-dom';
 ## Running Tests
 
 ```bash
+cd src/web
+
 # Run once
-npx vitest run
+npm run test
+# or: npx vitest run
 
 # Watch mode
-npx vitest
+npm run test:watch
+# or: npx vitest
 
 # With coverage
-npx vitest run --coverage
+npm run test:coverage
+# or: npx vitest run --coverage
 ```
 
 ---
 
-## What to Test
+## Test Infrastructure
 
-- **Hooks** — Query and mutation behavior with mocked services
-- **Components** — Render states (loading, empty, error, populated)
-- **Forms** — Validation, submission, error display
-- **Utils** — Pure function tests (formatCnpj, formatDate, regimeLabel)
+### renderWithProviders
+
+All component/page tests use a shared wrapper that provides:
+
+- **ConfigProvider** — Ant Design theme (dark mode)
+- **ThemeProvider** — App theme context
+- **QueryClientProvider** — TanStack Query with retry disabled
+- **MemoryRouter** — React Router for navigation
+
+```typescript
+import { renderWithProviders, screen, userEvent } from '@/test/render';
+
+it('renders with data', async () => {
+  renderWithProviders(<Component />);
+  expect(await screen.findByText('Title')).toBeInTheDocument();
+});
+```
+
+### MSW Handlers
+
+API calls are intercepted by MSW in `src/test/mocks/handlers.ts`:
+
+```typescript
+import { http, HttpResponse } from 'msw';
+
+export const handlers = [
+  http.get('http://localhost:8080/api/empresas', () => {
+    return HttpResponse.json({
+      success: true,
+      data: [{ id: '1', razaoSocial: 'Empresa Exemplo Ltda', ... }],
+      errorCode: null,
+    });
+  }),
+];
+```
+
+The MSW server is started/stopped in `src/test/setup.ts` automatically.
 
 ---
 
-## Test Pattern
+## Patterns by Type
 
-```typescript
-import { render, screen } from '@testing-library/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+### Component Tests
 
-function createWrapper() {
-  const queryClient = new QueryClient();
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-}
+```tsx
+import { renderWithProviders, screen, userEvent } from '@/test/render';
 
 describe('ComponentName', () => {
-  it('renders loading state', () => {
-    render(<ComponentName />, { wrapper: createWrapper() });
-    expect(screen.getByRole('status')).toBeInTheDocument();
+  it('renders and allows interaction', async () => {
+    const onClose = vi.fn();
+    const user = userEvent.setup();
+
+    renderWithProviders(<ComponentName open onClose={onClose} />);
+
+    await user.click(screen.getByText('Salvar'));
+    expect(onClose).toHaveBeenCalledOnce();
   });
 });
 ```
+
+### Hook Tests
+
+```tsx
+import { renderHook, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+function createWrapper() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  });
+  return function Wrapper({ children }: { children: React.ReactNode }) {
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  };
+}
+
+it('fetches data', async () => {
+  const { result } = renderHook(() => useMyHook(), { wrapper: createWrapper() });
+  await waitFor(() => expect(result.current.isSuccess).toBe(true));
+  expect(result.current.data).toHaveLength(2);
+});
+```
+
+### Service Tests (mocked axios)
+
+```tsx
+import { api } from '@/infrastructure/http/axios-client';
+
+vi.mock('@/infrastructure/http/axios-client', () => ({
+  api: { get: vi.fn(), post: vi.fn(), /* ... */ },
+}));
+
+it('calls the correct URL', async () => {
+  (api.get as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+    data: { success: true, data: [...], errorCode: null },
+  });
+
+  const result = await myService.getAll();
+  expect(api.get).toHaveBeenCalledWith('/api/endpoint');
+});
+```
+
+---
+
+## Coverage
+
+Current coverage (após implementação dos testes):
+
+| Métrica | % |
+|---|---|
+| Statements | 87.68% |
+| Branches | 86.87% |
+| Functions | 82.16% |
+| Lines | 87.59% |
+
+Excluded from coverage: `main.tsx`, `vite-env.d.ts`, `*.d.ts`, `types/**`, `mocks/**`, `test/**`.

@@ -36,8 +36,11 @@ A web-based system that replaces fragile spreadsheets for tracking accessory tax
 | Domain Events | ✅ Complete | MediatR INotification for search indexing side effects |
 | Smart Obligation Generation | ✅ Complete | Geração a partir do mês atual ao cadastrar empresa, evitando atrasos artificiais |
 | Year Rollover | ✅ Complete | `YearRolloverService` gera automaticamente obrigações do novo ano para todas as empresas ativas |
-| Backend Tests | ✅ Complete | 90 unit tests across Domain, Application, and Infrastructure layers |
-| Frontend Tests | ✅ Complete | 33+ unit tests across components, hooks, services, and utils |
+| Backend Tests | ✅ Complete | 163 unit tests across Domain, Application, Infrastructure.Data, Infrastructure.Services, Api, and Shared layers |
+| Frontend Tests | ✅ Complete | 174 unit tests (38 files) across components, hooks, services, pages, and utils — 87.68% coverage |
+| Export CSV/PDF | ✅ Complete | Dashboard (alertas + consolidado) e Obrigações com QuestPDF |
+| CI/CD Pipeline | ✅ Complete | GitHub Actions com build, teste e cobertura em push/PR |
+| Cobertura de Código | ✅ Complete | coverlet (backend) + Vitest v8 (frontend) com relatórios HTML/JSON/lcov |
 
 ---
 
@@ -45,13 +48,10 @@ A web-based system that replaces fragile spreadsheets for tracking accessory tax
 
 | Feature | Priority | Notes |
 |---|---|---|
-| Holiday Provider | Medium | Extend `IBusinessDayAdjuster` with Brazilian national holidays |
+| Holiday Provider | Medium | Extend `IBusinessDayAdjuster` with state/municipal holidays |
 | Year Selection in Calendar | Medium | Allow navigating across years |
-| Export to Excel/PDF | Low | Export obligation lists for offline use |
 | Multi-User Support | Low | Future: authentication, company assignment |
 | E2E Tests | Low | Playwright/Cypress tests for frontend flows |
-| CI/CD Pipeline | Low | GitHub Actions for automated build + test |
-| Frontend Tests | Low | Vitest + React Testing Library setup |
 
 ---
 

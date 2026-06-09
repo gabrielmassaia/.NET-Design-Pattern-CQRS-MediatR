@@ -41,7 +41,8 @@ Este sistema centraliza o cadastro de empresas, gera automaticamente as obrigaç
 | **Frontend** | React 19, Vite 6, TypeScript 5 |
 | **UI** | Ant Design 5, TanStack Query 5, Axios, Dayjs |
 | **Infraestrutura** | Docker Compose, Nginx |
-| **Testes** | xUnit, Moq, FluentAssertions |
+| **Testes** | xUnit, Moq, FluentAssertions, Vitest, Testing Library, MSW |
+| **CI / Cobertura** | GitHub Actions, coverlet, Vitest v8 coverage |
 
 ---
 
@@ -213,15 +214,47 @@ ADRs detalhados: [`docs/decisions/`](docs/decisions/).
 
 ## Testes
 
-- **76 testes unitários** — engine tributária, cálculo de vencimentos, CommandHandlers, QueryHandlers, Validators, AppServices, ValidationBehavior e Event Handlers.
-- **13 testes de integração** — via `WebApplicationFactory<Program>` com banco InMemory, Redis em memória e Meilisearch stub no-op. Cobrem todos os 13 endpoints da API.
+### Backend — 163 testes unitários + 4 de integração
+
+- **Domain**: Regras tributárias, cálculo de vencimentos, feriados, ajuste dia útil, Command/Query Handlers, Validators, ValidationBehavior.
+- **Application**: AppServices, AutoMapper profiles, CachedDashboard decorator, Event Handlers.
+- **Infrastructure.Data**: Repositórios (CRUD, soft delete, paginação, filtros), MeilisearchService, YearRolloverService.
+- **Infrastructure.Services**: Exportação CSV/PDF (Dashboard + Obrigações), sanitização CSV Injection.
+- **Shared**: ResponseData envelope, ResultExtensions.
+- **Integração**: 4 arquivos via `WebApplicationFactory<Program>` cobrindo todos os endpoints da API.
 
 ```bash
-# Unitários
 dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
-
-# Integração
 dotnet test src/api/PainelObrigacoes.IntegrationTests/PainelObrigacoes.IntegrationTests.csproj
+```
+
+### Frontend — 174 testes (38 arquivos) | Coverage 87.68%
+
+- **Services**: empresa, dashboard, obrigacao, base-service.
+- **Hooks**: useEmpresas, useObrigacoes, useDashboard (invalidação, loading, erro).
+- **Páginas**: Dashboard (KPI, alertas, export), Empresas (CRUD, busca), Calendário (filtros, registro).
+- **Componentes**: DataTable, FilterBar, StatusBadge, RegimeBadge, PageHeader, KpiGrid, DonutChart, AlertasChart, StatCard, UrgencyRow, ChartCard, LegendChip, AppSidebar, RegimeMatrixModal, EmpresaForm, EmpresaTable, EmpresaFilters, HistoricoDrawer, CalendarFilters, ExportButton, ObrigacaoTable.
+- **Utils**: formatters, export/triggerDownload, query-keys.
+- **Infra**: axios-client, ThemeContext.
+
+```bash
+cd src/web
+npm run test              # executa uma vez
+npm run test:watch        # modo watch
+npm run test:coverage     # com relatório de cobertura
+```
+
+### CI Pipeline
+
+GitHub Actions executando em todo push/PR na `main`:
+
+```yaml
+backend:
+  - dotnet restore → dotnet build → dotnet test --collect:"XPlat Code Coverage" --settings coverlet.runsettings
+  - dotnet test (integration)
+
+frontend:
+  - npm ci → npm run lint → npm run test:coverage → npm run build
 ```
 
 ---
@@ -276,4 +309,7 @@ As decisões de arquitetura, correções de padrões e validação final foram c
 | [`docs/decisions/`](docs/decisions/) | ADRs e decisões técnicas |
 | [`docs/backend/rules.md`](docs/backend/rules.md) | Convenções e padrões .NET |
 | [`docs/frontend/architecture.md`](docs/frontend/architecture.md) | Arquitetura React |
+| [`PLANO_DE_TESTES.md`](PLANO_DE_TESTES.md) | Diagnóstico e plano de implementação de testes |
+| [`coverlet.runsettings`](coverlet.runsettings) | Configuração de cobertura de código backend |
+| [`.github/workflows/ci.yml`](.github/workflows/ci.yml) | Pipeline CI (GitHub Actions) |
 | [`AGENTS.md`](AGENTS.md) | Orientações para agentes de IA |
