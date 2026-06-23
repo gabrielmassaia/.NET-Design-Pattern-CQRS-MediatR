@@ -21,7 +21,7 @@ scope: be
 | Parameters | camelCase | `command`, `cancellationToken` |
 | Properties | PascalCase | `RazaoSocial` |
 | Private fields | `_camelCase` | `_repository` |
-| Namespaces | `PainelObrigacoes.{Layer}.{Feature}` | `PainelObrigacoes.Domain.Empresas.Commands` |
+| Namespaces | `CleanArchReference.{Layer}.{Feature}` | `CleanArchReference.Domain.Empresas.Commands` |
 | Files | One class per file | `CreateEmpresaCommand.cs` |
 
 ---

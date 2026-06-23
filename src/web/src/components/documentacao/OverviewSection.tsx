@@ -23,7 +23,7 @@ export function OverviewSection() {
       id="overview"
       icon="📖"
       title="Visão Geral"
-      subtitle="Painel de Obrigações Acessórias — e-Auditoria"
+      subtitle="CleanArchReference — Estudo de Clean Architecture · CQRS · Design Patterns"
     >
       <Paragraph style={{ color: isDark ? 'rgba(255,255,255,0.75)' : 'rgba(0,0,0,0.75)', fontSize: 15, lineHeight: 1.7, marginBottom: 24 }}>
         Sistema para controle centralizado de obrigações fiscais acessórias. Escritórios contábeis gerenciam dezenas

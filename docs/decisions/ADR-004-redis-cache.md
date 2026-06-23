@@ -32,4 +32,4 @@ Use **Redis 7** with a **Decorator pattern** (`CachedDashboardAppService`) to ca
 
 ## Compliance
 
-See: `src/api/PainelObrigacoes.Application/Dashboard/Services/CachedDashboardAppService.cs`
+See: `src/api/CleanArchReference.Application/Dashboard/Services/CachedDashboardAppService.cs`

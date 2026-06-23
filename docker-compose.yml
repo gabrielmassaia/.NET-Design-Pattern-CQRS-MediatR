@@ -1,17 +1,17 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: painel_db
+    container_name: cleanref_db
     environment:
-      POSTGRES_DB: paineldb
-      POSTGRES_USER: paineluser
-      POSTGRES_PASSWORD: painelpass
+      POSTGRES_DB: cleanrefdb
+      POSTGRES_USER: cleanrefuser
+      POSTGRES_PASSWORD: cleanrefpass
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U paineluser -d paineldb"]
+      test: ["CMD-SHELL", "pg_isready -U cleanrefuser -d cleanrefdb"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -23,7 +23,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: painel_redis
+    container_name: cleanref_redis
     ports:
       - "6379:6379"
     healthcheck:
@@ -39,7 +39,7 @@ services:
 
   meilisearch:
     image: getmeili/meilisearch:v1.9
-    container_name: painel_meili
+    container_name: cleanref_meili
     ports:
       - "7700:7700"
     environment:
@@ -62,13 +62,13 @@ services:
   api:
     build:
       context: ./src/api
-      dockerfile: PainelObrigacoes.Api/Dockerfile
-    container_name: painel_api
+      dockerfile: CleanArchReference.Api/Dockerfile
+    container_name: cleanref_api
     ports:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=paineldb;Username=paineluser;Password=painelpass
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=cleanrefdb;Username=cleanrefuser;Password=cleanrefpass
       - ConnectionStrings__Redis=redis:6379,abortConnect=false
       - Meilisearch__Url=http://meilisearch:7700
       - Meilisearch__MasterKey=${MEILI_MASTER_KEY:-masterKey123}
@@ -98,7 +98,7 @@ services:
     build:
       context: ./src/web
       dockerfile: Dockerfile
-    container_name: painel_web
+    container_name: cleanref_web
     ports:
       - "3000:80"
       - "3001:443"

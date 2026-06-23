@@ -13,7 +13,7 @@ RUN apk add --no-cache openssl && \
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/ssl/private/selfsigned.key \
     -out /etc/ssl/certs/selfsigned.crt \
-    -subj "/C=BR/ST=SP/L=SaoPaulo/O=e-Auditoria/CN=localhost" && \
+    -subj "/C=BR/ST=SP/L=SaoPaulo/O=CleanArchReference/CN=localhost" && \
     chmod 600 /etc/ssl/private/selfsigned.key
 
 COPY --from=build /app/dist /usr/share/nginx/html

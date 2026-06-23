@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/api/">
+    <Project Path="src/api/CleanArchReference.IntegrationTests/CleanArchReference.IntegrationTests.csproj" />
+  </Folder>
+  <Project Path="src/api/CleanArchReference.Api/CleanArchReference.Api.csproj" />
+  <Project Path="src/api/CleanArchReference.Application/CleanArchReference.Application.csproj" />
+  <Project Path="src/api/CleanArchReference.Domain/CleanArchReference.Domain.csproj" />
+  <Project Path="src/api/CleanArchReference.Infrastructure.CrossCutting.IoC/CleanArchReference.Infrastructure.CrossCutting.IoC.csproj" />
+  <Project Path="src/api/CleanArchReference.Infrastructure.Data/CleanArchReference.Infrastructure.Data.csproj" />
+  <Project Path="src/api/CleanArchReference.Infrastructure.Services/CleanArchReference.Infrastructure.Services.csproj" />
+  <Project Path="src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj" />
+</Solution>

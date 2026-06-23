@@ -14,7 +14,7 @@ scope: be
 ## Project Structure
 
 ```
-PainelObrigacoes.Tests/
+CleanArchReference.Tests/
 ├── Api/
 │   └── Extensions/
 │       └── ResultExtensionsTests.cs
@@ -86,7 +86,7 @@ PainelObrigacoes.Tests/
 
 ```bash
 # All tests
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj
 
 # Filter by category
 dotnet test --filter "FullyQualifiedName~TributaryRulesEngine"
@@ -95,7 +95,7 @@ dotnet test --filter "FullyQualifiedName~TributaryRulesEngine"
 dotnet test --settings coverlet.runsettings
 
 # Integration tests
-dotnet test src/api/PainelObrigacoes.IntegrationTests/PainelObrigacoes.IntegrationTests.csproj
+dotnet test src/api/CleanArchReference.IntegrationTests/CleanArchReference.IntegrationTests.csproj
 ```
 
 ---

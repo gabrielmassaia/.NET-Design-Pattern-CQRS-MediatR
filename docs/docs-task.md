@@ -1,4 +1,4 @@
-# Documentation Implementation Plan — case_e-Auditoria
+# Documentation Implementation Plan — CleanArchReference
 
 > **Total:** 32 files across 5 categories
 > **Language:** English

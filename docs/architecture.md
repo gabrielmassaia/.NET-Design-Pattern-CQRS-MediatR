@@ -175,11 +175,11 @@ sequenceDiagram
 
 ```mermaid
 graph TD
-    Api[PainelObrigacoes.Api] --> Application[PainelObrigacoes.Application]
-    Api --> IoC[PainelObrigacoes.Infrastructure.CrossCutting.IoC]
-    Api --> Shared[PainelObrigacoes.Shared]
+    Api[CleanArchReference.Api] --> Application[CleanArchReference.Application]
+    Api --> IoC[CleanArchReference.Infrastructure.CrossCutting.IoC]
+    Api --> Shared[CleanArchReference.Shared]
 
-    Application --> Domain[PainelObrigacoes.Domain]
+    Application --> Domain[CleanArchReference.Domain]
     Application --> Shared
 
     IoC --> Domain

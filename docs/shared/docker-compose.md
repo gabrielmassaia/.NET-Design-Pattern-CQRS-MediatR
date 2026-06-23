@@ -54,7 +54,7 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["PainelObrigacoes.Api/PainelObrigacoes.Api.csproj", "PainelObrigacoes.Api/"]
+COPY ["CleanArchReference.Api/CleanArchReference.Api.csproj", "CleanArchReference.Api/"]
 # ... other csproj files
 RUN dotnet restore
 COPY . .
@@ -62,7 +62,7 @@ RUN dotnet publish -c Release -o /app/publish
 
 FROM base AS final
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PainelObrigacoes.Api.dll"]
+ENTRYPOINT ["dotnet", "CleanArchReference.Api.dll"]
 ```
 
 ## Web Dockerfile

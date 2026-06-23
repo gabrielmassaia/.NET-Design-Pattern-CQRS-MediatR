@@ -16,7 +16,7 @@ param(
 $BuildFlag = if ($NoBuild) { "" } else { "--build" }
 
 Write-Host ""
-Write-Host "  Painel de Obrigações Acessórias" -ForegroundColor Cyan
+Write-Host "  CleanArchReference" -ForegroundColor Cyan
 Write-Host "  ───────────────────────────────" -ForegroundColor Cyan
 Write-Host ""
 
@@ -34,7 +34,7 @@ Write-Host ""
 # Step 2: Wait for healthy services
 Write-Host "  ▸ Aguardando serviços ficarem saudáveis..." -ForegroundColor Yellow
 
-$services = @("painel_db", "painel_redis", "painel_meili")
+$services = @("cleanref_db", "cleanref_redis", "cleanref_meili")
 $timeout = 40
 $elapsed = 0
 
@@ -60,7 +60,7 @@ Write-Host "  ▸ Aguardando API .NET iniciar..." -ForegroundColor Yellow
 $apiTimeout = 60
 $apiElapsed = 0
 while ($apiElapsed -lt $apiTimeout) {
-    $apiStatus = docker inspect --format='{{.State.Health.Status}}' painel_api 2>$null
+    $apiStatus = docker inspect --format='{{.State.Health.Status}}' cleanref_api 2>$null
     if ($apiStatus -eq "healthy" -or $apiStatus -eq "starting") {
         break
     }
@@ -74,7 +74,7 @@ Write-Host "  ▸ Aguardando Frontend..." -ForegroundColor Yellow
 $webTimeout = 30
 $webElapsed = 0
 while ($webElapsed -lt $webTimeout) {
-    $webStatus = docker inspect --format='{{.State.Status}}' painel_web 2>$null
+    $webStatus = docker inspect --format='{{.State.Status}}' cleanref_web 2>$null
     if ($webStatus -eq "running") {
         break
     }

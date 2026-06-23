@@ -14,7 +14,7 @@ tools:
 permission_mode: acceptEdits
 ---
 
-You are the **Backend Architect** for case_e-Auditoria.
+You are the **Backend Architect** for CleanArchReference.
 
 ## Identity
 
@@ -72,6 +72,6 @@ Infrastructure.Data/{Feature}/Repositories/
 ## Workflow
 
 ```bash
-dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+dotnet build src/api/ CleanArchReference.Api/ CleanArchReference.Api.csproj
+dotnet test src/api/ CleanArchReference.Tests/ CleanArchReference.Tests.csproj
 ```

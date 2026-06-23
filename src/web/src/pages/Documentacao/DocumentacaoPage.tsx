@@ -29,7 +29,7 @@ const BANNER = (
       letterSpacing: '0.15em',
       marginBottom: 8,
     }}>
-      case e-Auditoria
+      CleanArchReference
     </div>
     <div style={{ display: 'flex', alignItems: 'baseline', gap: 14, marginBottom: 6 }}>
       <span style={{
@@ -55,7 +55,7 @@ const BANNER = (
       fontFamily: "'DM Mono', monospace",
       fontSize: 11,
     }}>
-      Painel de Obrigações Acessórias — Clean Architecture · .NET 9 · React 19
+      CleanArchReference — Projeto Referência de Estudo · Clean Architecture · .NET 9 · React 19
     </div>
   </div>
 );

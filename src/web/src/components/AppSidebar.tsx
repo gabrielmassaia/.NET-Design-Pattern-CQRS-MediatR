@@ -106,7 +106,7 @@ export function AppSidebar({ open, onClose, onToggle }: AppSidebarProps) {
           fontFamily: "'DM Mono', monospace", fontSize: 14, fontWeight: 400,
           color: GOLD, letterSpacing: '0.05em',
         }}>
-          e-Auditoria
+          CleanArchReference
         </span>
         <Avatar
           size={32}
@@ -168,7 +168,7 @@ export function AppSidebar({ open, onClose, onToggle }: AppSidebarProps) {
           style={{ background: SIDER_BG, overflow: 'hidden', flexShrink: 0 }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-            <Tooltip title="e-Auditoria" placement="right" mouseEnterDelay={0}>
+            <Tooltip title="CleanArchReference" placement="right" mouseEnterDelay={0}>
               <div style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 height: 52, borderBottom: '1px solid rgba(255,255,255,0.07)', cursor: 'default',

@@ -5,13 +5,13 @@ import { useAppTheme } from '@/context/ThemeContext';
 const { Text, Paragraph } = Typography;
 
 const PROJ_DATA = [
-  { project: 'PainelObrigacoes.Api',             layer: 'Api',       deps: 'Application, IoC, Shared',                    resp: 'Minimal API endpoints, Middleware, Program.cs' },
-  { project: 'PainelObrigacoes.Domain',           layer: 'Domain',    deps: 'Shared (apenas)',                              resp: 'Commands, Handlers, Models, Validators, Interfaces, Services, Events' },
-  { project: 'PainelObrigacoes.Application',      layer: 'App',       deps: 'Domain, Shared',                               resp: 'AppServices, ViewModels, AutoMapper' },
-  { project: 'PainelObrigacoes.Infrastructure.Data', layer: 'Infra',  deps: 'Domain',                                      resp: 'EF Core, Repositories, Migrations, Seed, Meilisearch, Event Handlers' },
-  { project: 'PainelObrigacoes.Infrastructure.Services', layer: 'Infra', deps: 'Application',                                resp: 'Export CSV/PDF/XLSX (QuestPDF, ClosedXML)' },
-  { project: 'PainelObrigacoes.Infrastructure.CrossCutting.IoC', layer: 'IoC', deps: 'Domain, App, Data, Services',          resp: 'ProjectBootstrapper, DI composition root' },
-  { project: 'PainelObrigacoes.Shared',          layer: 'Shared',    deps: 'nenhuma',                                      resp: 'ResponseData<T>, ResponseErrorCode' },
+  { project: 'CleanArchReference.Api',             layer: 'Api',       deps: 'Application, IoC, Shared',                    resp: 'Minimal API endpoints, Middleware, Program.cs' },
+  { project: 'CleanArchReference.Domain',           layer: 'Domain',    deps: 'Shared (apenas)',                              resp: 'Commands, Handlers, Models, Validators, Interfaces, Services, Events' },
+  { project: 'CleanArchReference.Application',      layer: 'App',       deps: 'Domain, Shared',                               resp: 'AppServices, ViewModels, AutoMapper' },
+  { project: 'CleanArchReference.Infrastructure.Data', layer: 'Infra',  deps: 'Domain',                                      resp: 'EF Core, Repositories, Migrations, Seed, Meilisearch, Event Handlers' },
+  { project: 'CleanArchReference.Infrastructure.Services', layer: 'Infra', deps: 'Application',                                resp: 'Export CSV/PDF/XLSX (QuestPDF, ClosedXML)' },
+  { project: 'CleanArchReference.Infrastructure.CrossCutting.IoC', layer: 'IoC', deps: 'Domain, App, Data, Services',          resp: 'ProjectBootstrapper, DI composition root' },
+  { project: 'CleanArchReference.Shared',          layer: 'Shared',    deps: 'nenhuma',                                      resp: 'ResponseData<T>, ResponseErrorCode' },
 ];
 
 const PROJ_COL = [

@@ -1,31 +1,32 @@
-﻿# Painel de Obrigações Acessórias — e-Auditoria
+﻿# CleanArchReference — Projeto Referência de Estudo
 
-> Sistema para controle centralizado de obrigações fiscais acessórias com geração automática, cálculo de vencimentos e alertas.
-
----
-
-## Visão Geral
-
-Escritórios contábeis gerenciam dezenas de CNPJs com regimes tributários distintos — cada regime exige um conjunto diferente de obrigações acessórias (DAS, DCTF, EFD, eSocial, SPED, DIRF, RAIS), cada uma com sua própria regra de vencimento. Perder um prazo significa multa.
-
-A maioria ainda gerencia isso em planilhas.
-
-Este sistema centraliza o cadastro de empresas, gera automaticamente as obrigações de acordo com as regras de cada regime, calcula vencimentos considerando feriados e dias úteis, controla entregas e alerta sobre prazos próximos ou vencidos.
+> **Clean Architecture · CQRS · Design Patterns · Boas Práticas .NET 9 + React 19**
+>
+> Projeto de referência para estudo de arquitetura de software, design patterns e boas práticas de desenvolvimento.
+> Domínio fiscal (obrigações acessórias) utilizado como pano de fundo para demonstrar padrões arquiteturais reais.
 
 ---
 
-## Funcionalidades
+## 🎯 Objetivo
 
-| Funcionalidade | Descrição |
+Este projeto serve como **material de estudo prático** sobre:
+
+| Pattern / Prática | Onde ver |
 |---|---|
-| **Gestão de Empresas** | Cadastro com CNPJ, razão social e regime tributário. Busca textual com Meilisearch. |
-| **Geração Automática de Obrigações** | Ao cadastrar uma empresa, 12 meses de obrigações são gerados conforme as regras do regime. |
-| **Calendário de Obrigações** | Visualização mensal por empresa com status (Pendente / Atrasada / Entregue) e filtros. |
-| **Registro de Entregas** | Marcar obrigações como entregues com data de conclusão. |
-| **Dashboard** | Totais consolidados: empresas, obrigações do mês, pendentes, entregues, atrasadas. |
-| **Painel de Alertas** | Obrigações vencendo em até 30 dias ou já atrasadas, ordenadas por urgência. |
-| **Cache** | Dashboard e alertas cacheados em Redis com invalidação por evento de domínio. |
-| **Busca Textual** | Empresas indexadas no Meilisearch com busca typo-tolerant. |
+| **Clean Architecture** (6+1 projetos) | Separação total entre camadas — Domain sem dependências |
+| **CQRS** com MediatR | Commands vs Queries, `IRequest<T>`, pipelines |
+| **Validação com FluentValidation** | `ValidationBehavior<TRequest, TResponse>` pipeline |
+| **Domain Events** `INotification` | Side effects desacoplados (cache, search indexing) |
+| **Repository Pattern + UnitOfWork** | `IUnitOfWork.CompleteAsync()` centraliza transações |
+| **Strategy Pattern** | `TributaryRulesEngine` — regras por regime tributário |
+| **Decorator Pattern** | `CachedDashboardAppService` decorando `IDashboardAppService` |
+| **Fluent Builder / Configurations** | EF Core Fluent API em arquivos `Configuration/` |
+| **AutoMapper Profiles** | ViewModels ↔ Models mapping |
+| **Minimal APIs** | Endpoints funcionais com `MapGroup` |
+| **Exception Middleware** | Tratamento global de erros sem try/catch nos endpoints |
+| **Domain Services puros** | `DueDateCalculator`, `BusinessDayAdjuster` sem dependências |
+| **Cache-aside + Event Invalidation** | Redis com invalidação por domain events |
+| **Soft Delete + RowVersion** | Concorrência e deleção lógica |
 
 ---
 
@@ -77,10 +78,6 @@ A stack (5 containers) fica pronta em ~30 segundos. Dados de demonstração popu
 | API (Swagger) | http://localhost:8080/swagger |
 | Meilisearch | http://localhost:7700 |
 
-### Dados de Demonstração
-
-4 empresas (uma de cada regime tributário) com 12 meses de obrigações geradas para o ano corrente.
-
 ---
 
 ## Arquitetura
@@ -94,29 +91,27 @@ Api → IoC → Infrastructure.Data → Domain
 
 O **Domain** é o centro — zero dependências de infraestrutura, banco ou HTTP.
 
-| Projeto | Responsabilidade |
-|---|---|
-| `Domain` | Commands, Handlers, Validators, Models, Repository interfaces, Domain Events |
-| `Application` | ViewModels, AppServices (fachadas finas), AutoMapper Profiles |
-| `Infrastructure.Data` | EF Core DbContext, Repositories concretos, Migrations, Seed |
-| `Infrastructure.CrossCutting.IoC` | DI composition root (ProjectBootstrapper) |
-| `Infrastructure.Services` | Exportação (CSV / PDF) |
-| `Api` | Endpoints (Minimal API), Middleware, Program.cs |
-| `Shared` | ResponseData envelope, ResponseErrorCode |
+| Projeto | Responsabilidade | Pattern |
+|---|---|---|
+| `Domain` | Commands, Handlers, Validators, Models, Repository interfaces, Domain Events, Domain Services | **Pure Domain** — zero dependências externas |
+| `Application` | ViewModels, AppServices (fachadas finas), AutoMapper Profiles | **Facade + DTO** |
+| `Infrastructure.Data` | EF Core DbContext, Repositories concretos, Migrations, Seed | **Repository + UnitOfWork** |
+| `Infrastructure.CrossCutting.IoC` | DI composition root (ProjectBootstrapper) | **Composition Root** |
+| `Infrastructure.Services` | Exportação (CSV / PDF) | **Strategy** |
+| `Api` | Endpoints (Minimal API), Middleware, Program.cs | **Minimal API + Middleware Pipeline** |
+| `Shared` | ResponseData envelope, ResponseErrorCode | **Envelope Pattern** |
 
-### Fluxo de Requisição
+### Fluxo de Requisição (CQRS Pipeline)
 
 ```
 Endpoint → AppService → IMediatrService → ValidationBehavior → CommandHandler → Repository → IUnitOfWork
 ```
 
-### Frontend
+### Frontend (Feature-Based Architecture)
 
 ```
 Page → Hook (TanStack Query) → Service → api/axios → API
 ```
-
-Organização por domínio, com `BaseService<TEntity, TCreate, TUpdate>`, barrel exports, path aliases `@/` e React Router DOM.
 
 ### Diagrama de Camadas
 
@@ -136,79 +131,50 @@ flowchart LR
 
 ---
 
-## Diagrama da API
+## Design Patterns Demonstrados
 
-```mermaid
-flowchart TD
-    Client["React SPA<br/>Ant Design + TanStack Query"] --> Nginx["Nginx<br/>Static SPA + Reverse Proxy"]
-    Nginx --> Api[".NET 9 API<br/>Minimal APIs"]
+| Pattern | Localização | Descrição |
+|---|---|---|
+| **Command Pattern** | `Domain/*/Commands/*.cs` | Commands como objetos imutáveis (`record`) |
+| **Mediator Pattern** | `MediatrService` | Desacopla sender de handler via MediatR |
+| **Chain of Responsibility** | `ValidationBehavior` | Pipeline de validação antes do handler |
+| **Strategy Pattern** | `TributaryRulesEngine` | Regras por regime tributário intercambiáveis |
+| **Repository Pattern** | `Domain/*/Interfaces/I*Repository.cs` | Abstração de persistência |
+| **Unit of Work** | `Infrastructure.Data/Context/UnitOfWork.cs` | Transações atômicas |
+| **Decorator Pattern** | `CachedDashboardAppService` | Adiciona cache sem modificar o serviço original |
+| **Observer Pattern** | Domain Events (`INotification`) | Eventos disparam handlers desacoplados |
+| **Facade Pattern** | `Application/*/Services/*AppService.cs` | Fachadas finas para os endpoints |
+| **Fluent Builder** | `Configurations/*.cs` | Fluent API do EF Core |
+| **DTO Pattern** | ViewModels | Isolamento entre domínio e API |
+| **Envelope Pattern** | `ResponseData<T>` | Resposta padronizada |
+| **Singleton / Lifetime** | DI Container | Scoped, Singleton, Transient |
+| **Exception Middleware** | `ExceptionMiddleware` | Tratamento global de erros |
+| **Options Pattern** | `IConfiguration` + `IOptions<T>` | Configuração tipada |
 
-    Api --> Middleware["Middlewares<br/>Exception, Security Headers, Rate Limiting"]
-    Middleware --> Endpoints["Endpoints<br/>Empresas, Obrigações, Dashboard"]
-
-    Endpoints --> AppServices["Application Services<br/>Thin facades"]
-    AppServices --> Mediator["MediatR<br/>Commands / Queries"]
-    Mediator --> Validation["FluentValidation<br/>ValidationBehavior"]
-    Validation --> Handlers["Command and Query Handlers"]
-
-    Handlers --> Domain["Domain<br/>TributaryRulesEngine<br/>DueDateCalculator<br/>BusinessDayAdjuster"]
-    Handlers --> Repositories["Repositories<br/>Interfaces in Domain"]
-    Repositories --> EF["EF Core 9<br/>DbContext + Migrations"]
-    EF --> Postgres["(PostgreSQL 16)"]
-
-    Handlers --> Events["Domain Events<br/>ObrigacaoEntregueEvent"]
-    Events --> Cache["Redis Cache<br/>Dashboard / Alertas"]
-
-    AppServices --> Export["Export Services<br/>CSV / PDF"]
-    AppServices --> Search["Meilisearch<br/>Company Search"]
-```
+Para mais detalhes, veja a [Documentação do Sistema](src/web) na interface web em `/documentacao`.
 
 ---
 
 ## Engine de Regras Tributárias
 
-O coração do sistema é a `TributaryRulesEngine`, que decide quais obrigações cada empresa deve entregar com base no regime tributário. A engine reside no domínio puro, sem dependências externas.
-
-### Matriz de Obrigações
-
-| Regime | Obrigações Mensais | Obrigações Anuais (Janeiro) |
-|---|---|---|
-| Simples Nacional | DAS, eSocial | DEFIS, DIRF, RAIS |
-| Lucro Presumido | DCTF, EFD-ICMS/IPI, EFD Contribuições, EFD-Reinf, eSocial | SPED ECD, SPED ECF, DIRF, RAIS |
-| Lucro Real | DCTF, EFD-ICMS/IPI, EFD Contribuições, EFD-Reinf, eSocial | SPED ECD, SPED ECF, DIRF, RAIS |
-| Imunidade / Isenção | Nenhuma | Nenhuma |
-
-### Características
-
-- **Regimes suportados:** Simples Nacional, Lucro Presumido, Lucro Real, Imunidade/Isenção.
-- **Obrigações anuais** são geradas apenas em janeiro.
-- **Vencimentos calculados automaticamente** com base em cada tipo de obrigação (DAS no dia 20 do mês seguinte, DCTF no dia 15 do segundo mês, SPED ECD em 31 de maio do ano seguinte, etc.).
-- **DAS** ajusta para o próximo dia útil quando o vencimento cai em fim de semana ou feriado.
-- **Feriados nacionais** considerados — implementados via `BrazilianHolidayProvider` com feriados fixos e móveis (algoritmo de Gauss para Páscoa, Carnaval, Corpus Christi).
-- **Obrigações não aplicáveis** não são persistidas — a engine gera apenas obrigações devidas, mantendo o banco de dados enxuto.
+O coração do sistema é a `TributaryRulesEngine`, que decide quais obrigações cada empresa deve entregar com base no regime tributário. A engine reside no domínio puro, sem dependências externas — um exemplo prático de **Strategy Pattern** + **Domain Service**.
 
 Detalhamento completo: [`docs/tributary-rules-engine.md`](docs/tributary-rules-engine.md).
 
 ---
 
-## Decisões Técnicas
+## Decisões Técnicas (ADRs)
 
-| Decisão | Escolha | Justificativa |
-|---|---|---|
-| Backend | .NET 9 com Minimal APIs | Requisito do case; endpoints finos e regras isoladas no Domain/Application. |
-| Arquitetura | Clean Architecture (7 projetos) | Separação clara entre API, aplicação, domínio e infraestrutura — extensibilidade e testabilidade. |
-| CQRS | MediatR + FluentValidation | Commands/Queries com pipeline de validação isolada dos handlers. |
-| Busca | Meilisearch | Demonstra busca dedicada com typo-tolerance; em produção pequena, PostgreSQL + pg_trgm seria suficiente. |
-| Cache | Redis + invalidação por evento | Reduz recomputação de dashboard/alertas; TTL como fallback para segurança. |
-| Concorrência | RowVersion (concurrency token) | EF Core gerencia conflitos de escrita em registro de entrega. |
-| Obrigações não aplicáveis | Não persistidas | Banco enxuto e queries mais simples; status "Não Aplicável" reservado para evolução. |
-| Geração de obrigações | Ano-calendário corrente | Facilita demonstração de pendências, atrasos e alertas. |
-| Feriados | Provider nacional extensível | Interface `IHolidayProvider` permite trocar implementação (municipal, estadual). |
-| Envelope de resposta | ResponseData\<T\> | Consistência com frontend; `ProblemDetails` (RFC 7807) seria o padrão em produção. |
+As decisões arquiteturais estão documentadas como ADRs em [`docs/decisions/`](docs/decisions/).
 
-As decisões foram calibradas para demonstrar organização, extensibilidade e domínio de arquitetura em um escopo reduzido de case técnico. Em um produto real, cada escolha seria reavaliada conforme volume, custo operacional, time e prazo.
-
-ADRs detalhados: [`docs/decisions/`](docs/decisions/).
+| ADR | Decisão |
+|---|---|
+| ADR-001 | Clean Architecture com 7 projetos |
+| ADR-002 | MediatR + CQRS + ValidationBehavior |
+| ADR-003 | PostgreSQL + EF Core 9 |
+| ADR-004 | Redis para cache do Dashboard |
+| ADR-005 | Meilisearch para busca textual |
+| ADR-006 | Docker Compose com 5 serviços |
 
 ---
 
@@ -216,26 +182,12 @@ ADRs detalhados: [`docs/decisions/`](docs/decisions/).
 
 ### Backend — 163 testes unitários + 4 de integração
 
-- **Domain**: Regras tributárias, cálculo de vencimentos, feriados, ajuste dia útil, Command/Query Handlers, Validators, ValidationBehavior.
-- **Application**: AppServices, AutoMapper profiles, CachedDashboard decorator, Event Handlers.
-- **Infrastructure.Data**: Repositórios (CRUD, soft delete, paginação, filtros), MeilisearchService, YearRolloverService.
-- **Infrastructure.Services**: Exportação CSV/PDF (Dashboard + Obrigações), sanitização CSV Injection.
-- **Shared**: ResponseData envelope, ResultExtensions.
-- **Integração**: 4 arquivos via `WebApplicationFactory<Program>` cobrindo todos os endpoints da API.
-
 ```bash
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
-dotnet test src/api/PainelObrigacoes.IntegrationTests/PainelObrigacoes.IntegrationTests.csproj
+dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj
+dotnet test src/api/CleanArchReference.IntegrationTests/CleanArchReference.IntegrationTests.csproj
 ```
 
-### Frontend — 174 testes (38 arquivos) | Coverage 87.68%
-
-- **Services**: empresa, dashboard, obrigacao, base-service.
-- **Hooks**: useEmpresas, useObrigacoes, useDashboard (invalidação, loading, erro).
-- **Páginas**: Dashboard (KPI, alertas, export), Empresas (CRUD, busca), Calendário (filtros, registro).
-- **Componentes**: DataTable, FilterBar, StatusBadge, RegimeBadge, PageHeader, KpiGrid, DonutChart, AlertasChart, StatCard, UrgencyRow, ChartCard, LegendChip, AppSidebar, RegimeMatrixModal, EmpresaForm, EmpresaTable, EmpresaFilters, HistoricoDrawer, CalendarFilters, ExportButton, ObrigacaoTable.
-- **Utils**: formatters, export/triggerDownload, query-keys.
-- **Infra**: axios-client, ThemeContext.
+### Frontend — 174 testes (38 arquivos) | Coverage ~87%
 
 ```bash
 cd src/web
@@ -244,57 +196,20 @@ npm run test:watch        # modo watch
 npm run test:coverage     # com relatório de cobertura
 ```
 
-### CI Pipeline
-
-GitHub Actions executando em todo push/PR na `main`:
-
-```yaml
-backend:
-  - dotnet restore → dotnet build → dotnet test --collect:"XPlat Code Coverage" --settings coverlet.runsettings
-  - dotnet test (integration)
-
-frontend:
-  - npm ci → npm run lint → npm run test:coverage → npm run build
-```
-
 ---
 
 ## Segurança e Limitações
 
-Este projeto foi desenvolvido para execução local e avaliação técnica. Uma revisão de segurança foi realizada considerando um cenário produtivo. Como o case é uma aplicação local de demonstração, itens como autenticação, multi-tenant e gestão de segredos foram documentados como evoluções futuras.
-
-### Implementado
+Projeto desenvolvido para fins de estudo e demonstração. Uma revisão de segurança foi realizada considerando um cenário produtivo.
 
 - Rate Limiting (100 req/min global, 5 req/min export)
 - Security Headers (7 headers via middleware + Nginx)
 - CORS restrito a origens conhecidas
 - Proteção contra CSV Injection
-- Tratamento de exceções sem vazamento de detalhes em produção
+- Exception handling sem vazamento de detalhes
 - Cache invalidation via eventos de domínio
-- HTTPS + HSTS no Nginx
-
-### Não implementado (decisão consciente)
-
-| Item | Motivo |
-|---|---|
-| Autenticação JWT | Não solicitado no case; sem valor agregado ao escopo de demonstração |
-| CSRF | Sem cookies de sessão, sem risco |
-| Secrets management | Configurações em docker-compose para execução imediata |
-| Multi-tenant | Sem conceito de usuário no escopo do case |
 
 Detalhamento completo: [`docs/security.md`](docs/security.md).
-
----
-
-## Uso de IA no Desenvolvimento
-
-Ferramentas utilizadas como aceleradores de desenvolvimento, não como substitutos de revisão técnica:
-
-- **Claude (Anthropic):** Planejamento inicial, arquitetura da solução e documentação.
-- **OpenCode + DeepSeek V4 Flash:** Implementação assistida de módulos, testes e frontend.
-- **Revisão manual:** Arquitetura, separação de responsabilidades, handlers, validações e consistência com os requisitos do case.
-
-As decisões de arquitetura, correções de padrões e validação final foram conduzidas manualmente.
 
 ---
 
@@ -309,7 +224,4 @@ As decisões de arquitetura, correções de padrões e validação final foram c
 | [`docs/decisions/`](docs/decisions/) | ADRs e decisões técnicas |
 | [`docs/backend/rules.md`](docs/backend/rules.md) | Convenções e padrões .NET |
 | [`docs/frontend/architecture.md`](docs/frontend/architecture.md) | Arquitetura React |
-| [`PLANO_DE_TESTES.md`](PLANO_DE_TESTES.md) | Diagnóstico e plano de implementação de testes |
-| [`coverlet.runsettings`](coverlet.runsettings) | Configuração de cobertura de código backend |
-| [`.github/workflows/ci.yml`](.github/workflows/ci.yml) | Pipeline CI (GitHub Actions) |
 | [`AGENTS.md`](AGENTS.md) | Orientações para agentes de IA |

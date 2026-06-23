@@ -5,34 +5,34 @@
     {
       "label": "API: Build",
       "type": "shell",
-      "command": "dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj",
+      "command": "dotnet build src/api/CleanArchReference.Api/CleanArchReference.Api.csproj",
       "problemMatcher": ["$msCompile"],
       "group": "build"
     },
     {
       "label": "API: Test",
       "type": "shell",
-      "command": "dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj",
+      "command": "dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj",
       "problemMatcher": [],
       "group": "test"
     },
     {
       "label": "API: Watch (dotnet watch)",
       "type": "shell",
-      "command": "dotnet watch run --project src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj",
+      "command": "dotnet watch run --project src/api/CleanArchReference.Api/CleanArchReference.Api.csproj",
       "problemMatcher": [],
       "isBackground": true
     },
     {
       "label": "API: Add Migration",
       "type": "shell",
-      "command": "cd src/api && dotnet ef migrations add ${input:migrationName} --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api",
+      "command": "cd src/api && dotnet ef migrations add ${input:migrationName} --project CleanArchReference.Infrastructure.Data --startup-project CleanArchReference.Api",
       "problemMatcher": []
     },
     {
       "label": "API: Update Database",
       "type": "shell",
-      "command": "cd src/api && dotnet ef database update --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api",
+      "command": "cd src/api && dotnet ef database update --project CleanArchReference.Infrastructure.Data --startup-project CleanArchReference.Api",
       "problemMatcher": []
     },
     // ── Frontend ─────────────────────────────────────────

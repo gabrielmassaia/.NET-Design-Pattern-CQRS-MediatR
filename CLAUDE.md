@@ -1,4 +1,4 @@
-# CLAUDE.md — case_e-Auditoria
+# CLAUDE.md — CleanArchReference
 
 ## Mandatory Reading Order
 
@@ -14,7 +14,7 @@ Before starting any task, read files in this order:
 
 ## Project Overview
 
-**Painel de Obrigações Acessórias** — A fiscal obligations management panel for Brazilian accounting firms. Manages companies (CNPJ + tax regime), generates monthly/annual accessory obligations automatically, tracks delivery status, and provides deadline alerts.
+**CleanArchReference** — Projeto referência de estudo sobre Clean Architecture, CQRS, Design Patterns e boas práticas de desenvolvimento com .NET 9 e React 19. O domínio fiscal (obrigações acessórias) serve como contexto para demonstração dos padrões arquiteturais.
 
 ### Tech Stack
 
@@ -39,16 +39,16 @@ Before starting any task, read files in this order:
 
 ```bash
 # Build
-dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj
+dotnet build src/api/CleanArchReference.Api/CleanArchReference.Api.csproj
 
 # Run tests
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj
 
 # Add EF migration
-cd src/api && dotnet ef migrations add <Name> --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api
+cd src/api && dotnet ef migrations add <Name> --project CleanArchReference.Infrastructure.Data --startup-project CleanArchReference.Api
 
 # Apply migration (local PG required)
-cd src/api && dotnet ef database update --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api
+cd src/api && dotnet ef database update --project CleanArchReference.Infrastructure.Data --startup-project CleanArchReference.Api
 ```
 
 ### Frontend
@@ -83,14 +83,14 @@ docker compose logs -f api web
 
 | File | Path |
 |---|---|
-| Solution | `case_e-Auditoria.slnx` |
-| Entry Point | `src/api/PainelObrigacoes.Api/Program.cs` |
-| DI Setup | `src/api/PainelObrigacoes.Infrastructure.CrossCutting.IoC/ProjectBootstrapper.cs` |
-| DbContext | `src/api/PainelObrigacoes.Infrastructure.Data/Context/AppDbContext.cs` |
-| Seed Data | `src/api/PainelObrigacoes.Infrastructure.Data/Seed/DatabaseSeeder.cs` |
-| Endpoints | `src/api/PainelObrigacoes.Api/Endpoints/` |
-| Domain Models | `src/api/PainelObrigacoes.Domain/` |
-| Tests | `src/api/PainelObrigacoes.Tests/` |
+| Solution | `CleanArchReference.slnx` |
+| Entry Point | `src/api/CleanArchReference.Api/Program.cs` |
+| DI Setup | `src/api/CleanArchReference.Infrastructure.CrossCutting.IoC/ProjectBootstrapper.cs` |
+| DbContext | `src/api/CleanArchReference.Infrastructure.Data/Context/AppDbContext.cs` |
+| Seed Data | `src/api/CleanArchReference.Infrastructure.Data/Seed/DatabaseSeeder.cs` |
+| Endpoints | `src/api/CleanArchReference.Api/Endpoints/` |
+| Domain Models | `src/api/CleanArchReference.Domain/` |
+| Tests | `src/api/CleanArchReference.Tests/` |
 | Frontend Entry | `src/web/src/main.tsx` |
 | Docker Compose | `docker-compose.yml` |
 
@@ -120,17 +120,19 @@ graph TD
 
 ---
 
-## Solution Structure (7 projects)
+## Solution Structure (9 projects)
 
 ```
-case_e-Auditoria.slnx
-├── PainelObrigacoes.Api                   → Endpoints (Minimal API), Middleware, Program.cs
-├── PainelObrigacoes.Application           → ViewModels, AppServices, AutoMapper
-├── PainelObrigacoes.Domain                → Commands, Handlers, Models, Validators
-├── PainelObrigacoes.Infrastructure.Data   → EF Core, Repositories, Migrations, Seed
-├── PainelObrigacoes.Infrastructure.CrossCutting.IoC  → DI Bootstrapper
-├── PainelObrigacoes.Shared                → ResponseData envelope
-└── PainelObrigacoes.Tests                 → Unit tests (xUnit)
+CleanArchReference.slnx
+├── CleanArchReference.Api                              → Endpoints (Minimal API), Middleware, Program.cs
+├── CleanArchReference.Application                      → ViewModels, AppServices, AutoMapper
+├── CleanArchReference.Domain                           → Commands, Handlers, Models, Validators, Domain Services
+├── CleanArchReference.Infrastructure.Data              → EF Core, Repositories, Migrations, Seed
+├── CleanArchReference.Infrastructure.CrossCutting.IoC  → DI Bootstrapper
+├── CleanArchReference.Infrastructure.Services          → Export (CSV/PDF)
+├── CleanArchReference.Shared                           → ResponseData envelope
+├── CleanArchReference.Tests                            → Unit tests (xUnit)
+└── CleanArchReference.IntegrationTests                 → Integration tests
 ```
 
 ---

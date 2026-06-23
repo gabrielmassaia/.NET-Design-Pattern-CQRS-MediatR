@@ -9,11 +9,11 @@
           <ExcludeByFile>**/Migrations/*.cs</ExcludeByFile>
           <IncludeTestAssembly>false</IncludeTestAssembly>
           <Exclude>
-            [PainelObrigacoes.Api]Program.*,
-            [PainelObrigacoes.Infrastructure.CrossCutting.IoC]*,
-            [PainelObrigacoes.Infrastructure.Data]*Migrations*,
-            [PainelObrigacoes.Infrastructure.Data]*Entities*,
-            [PainelObrigacoes.Infrastructure.Data]*Configurations*
+            [CleanArchReference.Api]Program.*,
+            [CleanArchReference.Infrastructure.CrossCutting.IoC]*,
+            [CleanArchReference.Infrastructure.Data]*Migrations*,
+            [CleanArchReference.Infrastructure.Data]*Entities*,
+            [CleanArchReference.Infrastructure.Data]*Configurations*
           </Exclude>
         </Configuration>
       </DataCollector>

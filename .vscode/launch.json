@@ -7,9 +7,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "Docker: Up (Full Stack)",
-      "program": "${workspaceFolder}/src/api/PainelObrigacoes.Api/bin/Debug/net9.0/PainelObrigacoes.Api.dll",
+      "program": "${workspaceFolder}/src/api/CleanArchReference.Api/bin/Debug/net9.0/CleanArchReference.Api.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/src/api/PainelObrigacoes.Api",
+      "cwd": "${workspaceFolder}/src/api/CleanArchReference.Api",
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://+:8080"
@@ -22,9 +22,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "API: Build",
-      "program": "${workspaceFolder}/src/api/PainelObrigacoes.Api/bin/Debug/net9.0/PainelObrigacoes.Api.dll",
+      "program": "${workspaceFolder}/src/api/CleanArchReference.Api/bin/Debug/net9.0/CleanArchReference.Api.dll",
       "args": [],
-      "cwd": "${workspaceFolder}/src/api/PainelObrigacoes.Api",
+      "cwd": "${workspaceFolder}/src/api/CleanArchReference.Api",
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_URLS": "http://+:8080"

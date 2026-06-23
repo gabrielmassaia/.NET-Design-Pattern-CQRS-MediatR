@@ -26,7 +26,7 @@ scope: sh
 
 ```bash
 # 1. Clone and enter project
-cd case_e-Auditoria
+cd CleanArchReference
 
 # 2. Start all services
 docker compose up --build -d
@@ -79,15 +79,15 @@ docker compose up -d db redis meilisearch
 
 # Apply migrations
 cd src/api
-dotnet ef database update --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api
+dotnet ef database update --project CleanArchReference.Infrastructure.Data --startup-project CleanArchReference.Api
 ```
 
 ### Backend
 
 ```bash
 # From project root
-dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj
-dotnet run --project src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj
+dotnet build src/api/CleanArchReference.Api/CleanArchReference.Api.csproj
+dotnet run --project src/api/CleanArchReference.Api/CleanArchReference.Api.csproj
 
 # API available at http://localhost:8080
 # Swagger at http://localhost:8080/swagger
@@ -110,13 +110,13 @@ npm run dev
 
 ```bash
 # Run all backend tests
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj
 
 # Run with verbose output
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj --verbosity normal
+dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj --verbosity normal
 
 # Filter specific tests
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj --filter "FullyQualifiedName~TributaryRulesEngine"
+dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj --filter "FullyQualifiedName~TributaryRulesEngine"
 ```
 
 ---
@@ -139,7 +139,7 @@ dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj --filte
 /
 ├── src/
 │   ├── api/           → .NET solution (7 projects)
-│   │   └── PainelObrigacoes.slnx
+│   │   └── CleanArchReference.slnx
 │   └── web/           → React + Vite frontend
 ├── docker-compose.yml → Infrastructure orchestration
 ├── AGENTS.md          → AI agent configuration

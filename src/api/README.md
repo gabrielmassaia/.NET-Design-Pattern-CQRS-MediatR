@@ -35,13 +35,13 @@
 
 | Módulo | Pasta | Depende de |
 |---|---|---|
-| ① Api | `PainelObrigacoes.Api` | Application, IoC, Shared |
-| ② Application | `PainelObrigacoes.Application` | Domain, Shared |
-| ③ IoC | `PainelObrigacoes.Infrastructure.CrossCutting.IoC` | Domain, Application, Data, Services |
-| ④ Domain | `PainelObrigacoes.Domain` | Shared (só) |
-| ⑤ Data | `PainelObrigacoes.Infrastructure.Data` | Domain |
-| ⑥ Services | `PainelObrigacoes.Infrastructure.Services` | Application |
-| ⑦ Shared | `PainelObrigacoes.Shared` | **nenhum** |
+| ① Api | `CleanArchReference.Api` | Application, IoC, Shared |
+| ② Application | `CleanArchReference.Application` | Domain, Shared |
+| ③ IoC | `CleanArchReference.Infrastructure.CrossCutting.IoC` | Domain, Application, Data, Services |
+| ④ Domain | `CleanArchReference.Domain` | Shared (só) |
+| ⑤ Data | `CleanArchReference.Infrastructure.Data` | Domain |
+| ⑥ Services | `CleanArchReference.Infrastructure.Services` | Application |
+| ⑦ Shared | `CleanArchReference.Shared` | **nenhum** |
 
 ## Fluxo de uma requisição
 

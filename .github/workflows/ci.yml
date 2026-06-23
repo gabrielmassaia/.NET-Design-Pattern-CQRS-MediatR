@@ -20,19 +20,19 @@ jobs:
           dotnet-version: 9.0.x
 
       - name: Restore
-        run: dotnet restore src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj
+        run: dotnet restore src/api/CleanArchReference.Api/CleanArchReference.Api.csproj
 
       - name: Build
-        run: dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj --no-restore
+        run: dotnet build src/api/CleanArchReference.Api/CleanArchReference.Api.csproj --no-restore
 
       - name: Run unit tests with coverage
-        run: dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+        run: dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj
           --no-build
           --collect:"XPlat Code Coverage"
           --settings coverlet.runsettings
 
       - name: Run integration tests
-        run: dotnet test src/api/PainelObrigacoes.IntegrationTests/PainelObrigacoes.IntegrationTests.csproj --no-build
+        run: dotnet test src/api/CleanArchReference.IntegrationTests/CleanArchReference.IntegrationTests.csproj --no-build
         continue-on-error: true
 
   frontend:

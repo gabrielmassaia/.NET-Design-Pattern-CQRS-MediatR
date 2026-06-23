@@ -1,6 +1,6 @@
-# 🏛️ e-Auditoria — Guia de Estudo Completo
+# 🏛️ CleanArchReference — Guia de Estudo Completo
 
-> **Case Técnico:** Painel de Obrigações Acessórias
+> **Projeto Referência de Estudo — Clean Architecture · Design Patterns · Boas Práticas
 > **Stack:** .NET 9 + React 19 + PostgreSQL 16 + Redis + Meilisearch
 > **Arquitetura:** Clean Architecture · CQRS · MediatR · EF Core
 
@@ -28,7 +28,7 @@
 
 ### O que é?
 
-O **e-Auditoria (Painel de Obrigações Acessórias)** é um sistema web que substitui planilhas frágeis no gerenciamento de obrigações fiscais acessórias brasileiras. Ele gerencia múltiplas empresas com diferentes regimes tributários, gera obrigações automaticamente com base em regras fiscais, calcula datas de vencimento com ajuste de dias úteis, rastreia status de entrega e emite alertas sobre prazos futuros ou vencidos.
+O **CleanArchReference (Painel de Obrigações Acessórias)** é um sistema web que substitui planilhas frágeis no gerenciamento de obrigações fiscais acessórias brasileiras. Ele gerencia múltiplas empresas com diferentes regimes tributários, gera obrigações automaticamente com base em regras fiscais, calcula datas de vencimento com ajuste de dias úteis, rastreia status de entrega e emite alertas sobre prazos futuros ou vencidos.
 
 ### Features Implementadas
 
@@ -83,7 +83,7 @@ A Clean Architecture foi escolhida para garantir:
 ### Os 6 Projetos da Solução
 
 ```
-PainelObrigacoes.slnx
+CleanArchReference.slnx
 ├── 📁 Domain                    # Coração do sistema (0 dependências)
 ├── 📁 Application               # Casos de uso e ViewModels
 ├── 📁 Infrastructure.Data       # EF Core, Repositories, Migrations
@@ -96,10 +96,10 @@ PainelObrigacoes.slnx
 
 ```mermaid
 graph TD
-    Api[PainelObrigacoes.Api] --> Application[PainelObrigacoes.Application]
+    Api[CleanArchReference.Api] --> Application[CleanArchReference.Application]
     Api --> IoC[Infra.CrossCutting.IoC]
-    Api --> Shared[PainelObrigacoes.Shared]
-    Application --> Domain[PainelObrigacoes.Domain]
+    Api --> Shared[CleanArchReference.Shared]
+    Application --> Domain[CleanArchReference.Domain]
     Application --> Shared
     IoC --> Domain
     IoC --> Application
@@ -1078,7 +1078,7 @@ O Nginx serve o SPA React e faz proxy reverso para `/api/` → API .NET.
 
 ### Intencionalmente Omitido (para o case)
 
-- ❌ **Autenticação JWT** — Não era requisito do case técnico
+- ❌ **Autenticação JWT** — Não era requisito do Projeto Referência de Estudo — Clean Architecture · Design Patterns · Boas Práticas
 - ❌ **CSRF** — Não há cookies de sessão
 - ❌ **Secrets Management** — Credenciais no docker-compose (aceitável para demonstração)
 - ❌ **Multi-tenant** — Sistema de empresa única
@@ -1090,7 +1090,7 @@ O Nginx serve o SPA React e faz proxy reverso para `/api/` → API .NET.
 ### Backend — xUnit + Moq + FluentAssertions
 
 ```bash
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj
 ```
 
 **Estrutura:**

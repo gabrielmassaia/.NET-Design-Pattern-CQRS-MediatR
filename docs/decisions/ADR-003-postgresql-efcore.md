@@ -28,4 +28,4 @@ Use **PostgreSQL 16** as the database engine with **EF Core 9** as the ORM, usin
 
 ## Compliance
 
-See: `src/api/PainelObrigacoes.Infrastructure.Data/Context/AppDbContext.cs`
+See: `src/api/CleanArchReference.Infrastructure.Data/Context/AppDbContext.cs`

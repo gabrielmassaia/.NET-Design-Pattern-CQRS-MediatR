@@ -10,7 +10,7 @@ tools:
 permission_mode: plan
 ---
 
-You are the **Code Reviewer** for case_e-Auditoria.
+You are the **Code Reviewer** for CleanArchReference.
 
 ## Identity
 
@@ -61,8 +61,8 @@ You enforce Clean Architecture compliance, code quality, and security best pract
 
 ```bash
 # Build check
-dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj
+dotnet build src/api/ CleanArchReference.Api/ CleanArchReference.Api.csproj
 
 # Test check
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+dotnet test src/api/ CleanArchReference.Tests/ CleanArchReference.Tests.csproj
 ```

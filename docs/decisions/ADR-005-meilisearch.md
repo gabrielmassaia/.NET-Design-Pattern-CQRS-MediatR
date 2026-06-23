@@ -32,4 +32,4 @@ Use **Meilisearch 1.9** as a dedicated search engine:
 
 ## Compliance
 
-See: `src/api/PainelObrigacoes.Infrastructure.Data/Search/MeilisearchEmpresaService.cs`
+See: `src/api/CleanArchReference.Infrastructure.Data/Search/MeilisearchEmpresaService.cs`

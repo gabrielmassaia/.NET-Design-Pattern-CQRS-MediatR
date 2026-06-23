@@ -7,7 +7,7 @@ scope: sh
 
 # Documentation Index
 
-> Master navigation for the case_e-Auditoria documentation.
+> Master navigation for the CleanArchReference documentation.
 
 ---
 

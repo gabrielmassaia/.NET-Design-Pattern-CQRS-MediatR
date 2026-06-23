@@ -35,8 +35,8 @@ docker compose up -d db
 
 # Generate migration
 dotnet ef migrations add MigrationName \
-  --project PainelObrigacoes.Infrastructure.Data \
-  --startup-project PainelObrigacoes.Api
+  --project CleanArchReference.Infrastructure.Data \
+  --startup-project CleanArchReference.Api
 ```
 
 ---

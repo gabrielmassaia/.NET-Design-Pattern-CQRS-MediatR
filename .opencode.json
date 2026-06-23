@@ -25,12 +25,12 @@
   ],
 
   "quick_commands": {
-    "build": "dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj",
-    "test": "dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj",
+    "build": "dotnet build src/api/CleanArchReference.Api/CleanArchReference.Api.csproj",
+    "test": "dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj",
     "docker": "docker compose up --build -d",
     "docker:logs": "docker compose logs -f api web",
     "frontend": "cd src/web && npm run dev",
-    "migration": "cd src/api && dotnet ef migrations add <Name> --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api"
+    "migration": "cd src/api && dotnet ef migrations add <Name> --project CleanArchReference.Infrastructure.Data --startup-project CleanArchReference.Api"
   },
 
   "architecture": {

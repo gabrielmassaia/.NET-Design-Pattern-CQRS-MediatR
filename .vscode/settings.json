@@ -97,7 +97,7 @@
   // C# / .NET
   // =========================
   "csharp.format.enable": true,
-  "dotnet.defaultSolution": "case_e-Auditoria.slnx",
+  "dotnet.defaultSolution": "CleanArchReference.slnx",
   "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
   "omnisharp.enableRoslynAnalyzers": true,
   "omnisharp.enableEditorConfigSupport": true,

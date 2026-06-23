@@ -1,6 +1,7 @@
-# AGENTS.md — case_e-Auditoria
+# AGENTS.md — CleanArchReference
 
 > **Profile:** Senior Fullstack Engineer (.NET 9 + React 19)
+> **Purpose:** Projeto referência de estudo — Clean Architecture · Design Patterns · Boas Práticas
 > **Architecture:** Clean Architecture · MediatR CQRS · EF Core · PostgreSQL 16
 > **Frontend:** React 19 · Vite · Ant Design 5 · TanStack Query 5 · Axios
 > **Infrastructure:** Docker Compose · Redis · Meilisearch
@@ -24,7 +25,10 @@ When processing any task, consult sources in this order:
 
 ## Core Philosophy
 
-### Clean Architecture (6-project .NET solution)
+> Este projeto é um **material de estudo** sobre Clean Architecture, CQRS, Design Patterns e boas práticas.
+> O domínio fiscal (obrigações acessórias) é o pano de fundo — o foco está na **arquitetura e nos padrões**.
+
+### Clean Architecture (7-project .NET solution)
 
 ```
 Api → Application → Domain
@@ -89,10 +93,10 @@ flowchart LR
 
 ```bash
 # Build
-dotnet build src/api/PainelObrigacoes.Api/PainelObrigacoes.Api.csproj
+dotnet build src/api/CleanArchReference.Api/CleanArchReference.Api.csproj
 
 # Test
-dotnet test src/api/PainelObrigacoes.Tests/PainelObrigacoes.Tests.csproj
+dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj
 
 # Run with Docker
 docker compose up --build -d
@@ -101,7 +105,7 @@ docker compose up --build -d
 cd src/web && npm run dev
 
 # Add migration
-cd src/api && dotnet ef migrations add <Name> --project PainelObrigacoes.Infrastructure.Data --startup-project PainelObrigacoes.Api
+cd src/api && dotnet ef migrations add <Name> --project CleanArchReference.Infrastructure.Data --startup-project CleanArchReference.Api
 ```
 
 ---
@@ -109,13 +113,13 @@ cd src/api && dotnet ef migrations add <Name> --project PainelObrigacoes.Infrast
 ## Key File Mapping
 
 | File | Purpose |
-|---|---|
-| `src/api/PainelObrigacoes.Api/Program.cs` | Application entry point |
-| `src/api/PainelObrigacoes.Api/Middleware/ExceptionMiddleware.cs` | Global exception handler |
-| `src/api/PainelObrigacoes.Infrastructure.CrossCutting.IoC/ProjectBootstrapper.cs` | DI composition root |
-| `src/api/PainelObrigacoes.Infrastructure.Data/Context/AppDbContext.cs` | EF Core DbContext |
-| `src/api/PainelObrigacoes.Infrastructure.Data/Seed/DatabaseSeeder.cs` | Demo data seeder |
-| `src/api/PainelObrigacoes.Domain/Obrigacoes/Services/TributaryRulesEngine.cs` | Fiscal rules engine |
+|---|---|---|
+| `src/api/CleanArchReference.Api/Program.cs` | Application entry point |
+| `src/api/CleanArchReference.Api/Middleware/ExceptionMiddleware.cs` | Global exception handler |
+| `src/api/CleanArchReference.Infrastructure.CrossCutting.IoC/ProjectBootstrapper.cs` | DI composition root |
+| `src/api/CleanArchReference.Infrastructure.Data/Context/AppDbContext.cs` | EF Core DbContext |
+| `src/api/CleanArchReference.Infrastructure.Data/Seed/DatabaseSeeder.cs` | Demo data seeder |
+| `src/api/CleanArchReference.Domain/Obrigacoes/Services/TributaryRulesEngine.cs` | Fiscal rules engine (Strategy Pattern) |
 | `docker-compose.yml` | Infrastructure orchestration |
 
 ---
