@@ -9,6 +9,8 @@ public sealed class AppDbContext : DbContext
 
     public DbSet<EmpresaEntity> Empresas => Set<EmpresaEntity>();
     public DbSet<ObrigacaoEntity> Obrigacoes => Set<ObrigacaoEntity>();
+    public DbSet<TagEntity> Tags => Set<TagEntity>();
+    public DbSet<ObrigacaoTagEntity> ObrigacaoTags => Set<ObrigacaoTagEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
         => modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

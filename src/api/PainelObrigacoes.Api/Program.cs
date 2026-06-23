@@ -77,6 +77,7 @@ if (app.Environment.IsDevelopment())
 app.MapEmpresasEndpoints();
 app.MapObrigacoesEndpoints();
 app.MapDashboardEndpoints();
+app.MapTagsEndpoints();
 app.MapHealthChecks("/health");
 
 using (var scope = app.Services.CreateScope())

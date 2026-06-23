@@ -1,3 +1,18 @@
+// ============================================================
+// 🟢 FASE 2 — Interface do AppService (Application Layer)
+// ============================================================
+//
+// Responsabilidade: "Contrato do tradutor entre camadas"
+// Por que existe interface?
+//   1. DIP (Dependency Inversion Principle):
+//      O endpoint depende da abstração (interface), não da implementação
+//   2. Testabilidade: podemos mockar IEmpresaAppService nos testes
+//   3. Desacoplamento: se mudar a implementação, o endpoint não quebra
+//
+// Implementação: EmpresaAppService (mesma pasta)
+// Registro DI: EmpresaSetup.cs — AddScoped<IEmpresaAppService, EmpresaAppService>()
+// ============================================================
+
 using PainelObrigacoes.Application.Empresas.ViewModels;
 
 namespace PainelObrigacoes.Application.Empresas.Services;

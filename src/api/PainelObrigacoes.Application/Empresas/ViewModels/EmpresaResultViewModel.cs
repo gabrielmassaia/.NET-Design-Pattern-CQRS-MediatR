@@ -1,3 +1,18 @@
+// ============================================================
+// 🟢 FASE 2 — EmpresaResultViewModel (Contrato de Saída)
+// ============================================================
+//
+// Responsabilidade: "O que a API devolve pro frontend"
+// Diferença do CreateEmpresaViewModel (entrada):
+//   Entrada  → não tem Id, não tem CreatedAt
+//   Saída    → TEM Id (gerado pelo banco) e CreatedAt (data da criação)
+//
+// Isso mostra por que NÃO podemos usar o mesmo objeto pra entrada e saída:
+//   - O cliente não envia Id (não sabe qual vai ser)
+//   - O cliente não envia CreatedAt (quem define é o sistema)
+//   - Objetos diferentes = contratos diferentes = API mais clara
+// ============================================================
+
 using PainelObrigacoes.Domain.Enums;
 
 namespace PainelObrigacoes.Application.Empresas.ViewModels;

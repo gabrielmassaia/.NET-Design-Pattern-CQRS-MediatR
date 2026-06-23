@@ -116,6 +116,23 @@ public sealed class ObrigacaoRepository : IObrigacaoRepository
                         && o.Competencia <= fim);
     }
 
+    public void AdicionarTag(Guid obrigacaoId, Guid tagId)
+        => _context.ObrigacaoTags.Add(new ObrigacaoTagEntity { ObrigacaoId = obrigacaoId, TagId = tagId });
+
+    public void RemoverTag(Guid obrigacaoId, Guid tagId)
+    {
+        var junction = _context.ObrigacaoTags.Local
+            .FirstOrDefault(ot => ot.ObrigacaoId == obrigacaoId && ot.TagId == tagId);
+
+        if (junction is null)
+        {
+            junction = new ObrigacaoTagEntity { ObrigacaoId = obrigacaoId, TagId = tagId };
+            _context.ObrigacaoTags.Attach(junction);
+        }
+
+        _context.ObrigacaoTags.Remove(junction);
+    }
+
     public void CreateRange(IEnumerable<ObrigacaoModel> models)
         => _context.Obrigacoes.AddRange(models.Select(ToEntity));
 

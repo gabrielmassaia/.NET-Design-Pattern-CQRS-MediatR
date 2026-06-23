@@ -13,4 +13,6 @@ public interface IObrigacaoRepository
     Task<bool> HasObrigacoesInYearAsync(Guid empresaId, int ano);
     void CreateRange(IEnumerable<ObrigacaoModel> models);
     void Update(ObrigacaoModel model);
+    void AdicionarTag(Guid obrigacaoId, Guid tagId);
+    void RemoverTag(Guid obrigacaoId, Guid tagId);
 }

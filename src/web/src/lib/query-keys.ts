@@ -16,3 +16,8 @@ export const dashboardKeys = {
   dashboard: (ano: number, mes: number) => ['dashboard', ano, mes] as const,
   alertas: ['alertas'] as const,
 };
+
+export const tagsKeys = {
+  all: ['tags'] as const,
+  byObrigacao: (obrigacaoId: string) => ['tags', 'obrigacao', obrigacaoId] as const,
+};

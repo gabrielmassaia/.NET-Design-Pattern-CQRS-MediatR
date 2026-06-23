@@ -17,7 +17,7 @@ namespace PainelObrigacoes.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.16")
+                .HasAnnotation("ProductVersion", "9.0.17")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -106,6 +106,53 @@ namespace PainelObrigacoes.Infrastructure.Data.Migrations
                     b.ToTable("Obrigacoes", (string)null);
                 });
 
+            modelBuilder.Entity("PainelObrigacoes.Infrastructure.Data.Entities.ObrigacaoTagEntity", b =>
+                {
+                    b.Property<Guid>("ObrigacaoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ObrigacaoId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("ObrigacaoTags", (string)null);
+                });
+
+            modelBuilder.Entity("PainelObrigacoes.Infrastructure.Data.Entities.TagEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Cor")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Nome");
+
+                    b.ToTable("Tags", (string)null);
+                });
+
             modelBuilder.Entity("PainelObrigacoes.Infrastructure.Data.Entities.ObrigacaoEntity", b =>
                 {
                     b.HasOne("PainelObrigacoes.Infrastructure.Data.Entities.EmpresaEntity", "Empresa")
@@ -117,7 +164,36 @@ namespace PainelObrigacoes.Infrastructure.Data.Migrations
                     b.Navigation("Empresa");
                 });
 
+            modelBuilder.Entity("PainelObrigacoes.Infrastructure.Data.Entities.ObrigacaoTagEntity", b =>
+                {
+                    b.HasOne("PainelObrigacoes.Infrastructure.Data.Entities.ObrigacaoEntity", "Obrigacao")
+                        .WithMany("Tags")
+                        .HasForeignKey("ObrigacaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PainelObrigacoes.Infrastructure.Data.Entities.TagEntity", "Tag")
+                        .WithMany("Obrigacoes")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Obrigacao");
+
+                    b.Navigation("Tag");
+                });
+
             modelBuilder.Entity("PainelObrigacoes.Infrastructure.Data.Entities.EmpresaEntity", b =>
+                {
+                    b.Navigation("Obrigacoes");
+                });
+
+            modelBuilder.Entity("PainelObrigacoes.Infrastructure.Data.Entities.ObrigacaoEntity", b =>
+                {
+                    b.Navigation("Tags");
+                });
+
+            modelBuilder.Entity("PainelObrigacoes.Infrastructure.Data.Entities.TagEntity", b =>
                 {
                     b.Navigation("Obrigacoes");
                 });

@@ -12,3 +12,5 @@ export type {
 export { ExportFormato } from './export';
 
 export type { DashboardData, Alerta } from './dashboard';
+
+export type { Tag, CreateTagPayload, VincularTagsPayload } from './tag';

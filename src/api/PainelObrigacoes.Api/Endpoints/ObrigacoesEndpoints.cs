@@ -1,6 +1,8 @@
 using PainelObrigacoes.Api.Extensions;
 using PainelObrigacoes.Application.Obrigacoes.Services;
 using PainelObrigacoes.Application.Obrigacoes.ViewModels;
+using PainelObrigacoes.Application.Tags.Services;
+using PainelObrigacoes.Application.Tags.ViewModels;
 using PainelObrigacoes.Shared.ResponseData;
 
 namespace PainelObrigacoes.Api.Endpoints;
@@ -28,6 +30,15 @@ public static class ObrigacoesEndpoints
         group.MapGet("/export", ExportObrigacoesAsync)
             .WithName("ExportObrigacoes")
             .RequireRateLimiting("Export");
+
+        group.MapGet("/{id:guid}/tags", FindTagsByObrigacaoAsync)
+            .WithName("FindTagsByObrigacao")
+            .Produces<ResponseData<IList<TagResultViewModel>>>(StatusCodes.Status200OK);
+
+        group.MapPost("/{id:guid}/tags", VincularTagsAsync)
+            .WithName("VincularTags")
+            .Produces<ResponseData<ObrigacaoResultViewModel>>(StatusCodes.Status200OK)
+            .Produces<ResponseData<object>>(StatusCodes.Status404NotFound);
 
         return app;
     }
@@ -69,6 +80,25 @@ public static class ObrigacoesEndpoints
         CancellationToken ct)
     {
         var result = await appService.GetHistoricoAsync(empresaId, ct);
+        return result.ToOkResponse();
+    }
+
+    private static async Task<IResult> FindTagsByObrigacaoAsync(
+        Guid id,
+        ITagAppService appService,
+        CancellationToken ct)
+    {
+        var result = await appService.FindByObrigacaoAsync(id, ct);
+        return result.ToOkResponse();
+    }
+
+    private static async Task<IResult> VincularTagsAsync(
+        Guid id,
+        VincularTagsViewModel payload,
+        ITagAppService appService,
+        CancellationToken ct)
+    {
+        var result = await appService.VincularTagsAsync(id, payload, ct);
         return result.ToOkResponse();
     }
 

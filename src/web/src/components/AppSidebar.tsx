@@ -1,5 +1,6 @@
 import {
   AlertOutlined,
+  ApartmentOutlined,
   CalendarOutlined,
   DashboardOutlined,
   FileTextOutlined,
@@ -7,6 +8,7 @@ import {
   MoonOutlined,
   ShopOutlined,
   SunOutlined,
+  TagsOutlined,
 } from '@ant-design/icons';
 import { Avatar, Drawer, Grid, Layout, Tooltip, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,11 +18,13 @@ const { Sider } = Layout;
 const { useBreakpoint } = Grid;
 
 const NAV_ITEMS: { path: string; icon: React.ReactNode; label: string }[] = [
-  { path: '/dashboard',    icon: <DashboardOutlined />, label: 'Dashboard'    },
-  { path: '/empresas',     icon: <ShopOutlined />,      label: 'Empresas'     },
-  { path: '/calendario',   icon: <CalendarOutlined />,  label: 'Calendário'   },
-  { path: '/dashboard?alertas=1', icon: <AlertOutlined />, label: 'Alertas'   },
-  { path: '/documentacao', icon: <FileTextOutlined />,  label: 'Documentação' },
+  { path: '/dashboard',    icon: <DashboardOutlined />,    label: 'Dashboard'    },
+  { path: '/empresas',     icon: <ShopOutlined />,         label: 'Empresas'     },
+  { path: '/calendario',   icon: <CalendarOutlined />,     label: 'Calendário'   },
+  { path: '/dashboard?alertas=1', icon: <AlertOutlined />, label: 'Alertas'     },
+  { path: '/tags',         icon: <TagsOutlined />,          label: 'Etiquetas'    },
+  { path: '/estudo',       icon: <ApartmentOutlined />,    label: 'Estudo'       },
+  { path: '/documentacao', icon: <FileTextOutlined />,     label: 'Documentação' },
 ];
 
 const GOLD = '#D4A843';
@@ -149,7 +153,15 @@ export function AppSidebar({ open, onClose, onToggle }: AppSidebarProps) {
   return (
     <>
       {/* Desktop Sider — hidden on mobile */}
-      <div style={{ display: isMobile ? 'none' : 'block' }}>
+      <div style={{
+        display: isMobile ? 'none' : 'block',
+        position: 'sticky',
+        top: 0,
+        height: '100vh',
+        alignSelf: 'flex-start',
+        flexShrink: 0,
+        zIndex: 10,
+      }}>
         <Sider
           width={48}
           theme="dark"

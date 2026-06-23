@@ -12,4 +12,5 @@ public sealed class ObrigacaoEntity : EntityBase
     public DateTime? DataEntrega { get; set; }
     public StatusObrigacao Status { get; set; } = StatusObrigacao.Pendente;
     public byte[] RowVersion { get; set; } = [];
+    public ICollection<ObrigacaoTagEntity> Tags { get; set; } = [];
 }

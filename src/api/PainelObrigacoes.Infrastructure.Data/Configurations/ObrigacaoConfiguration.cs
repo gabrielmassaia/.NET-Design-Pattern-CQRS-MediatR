@@ -21,5 +21,10 @@ public sealed class ObrigacaoConfiguration : IEntityTypeConfiguration<ObrigacaoE
 
         builder.Property(o => o.RowVersion)
             .IsRowVersion();
+
+        builder.HasMany(o => o.Tags)
+               .WithOne(ot => ot.Obrigacao)
+               .HasForeignKey(ot => ot.ObrigacaoId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 }
