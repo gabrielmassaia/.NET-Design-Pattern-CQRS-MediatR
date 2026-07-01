@@ -1,4 +1,5 @@
 import { renderWithProviders, screen, userEvent, waitFor } from '@/test/render';
+import dayjs from 'dayjs';
 import DashboardPage from './DashboardPage';
 
 describe('DashboardPage', () => {
@@ -67,7 +68,8 @@ describe('DashboardPage', () => {
 
   it('renders period tag with current month/year', async () => {
     renderWithProviders(<DashboardPage />);
-    expect(await screen.findByText(/06\/26/)).toBeInTheDocument();
+    const currentPeriod = dayjs().format('MM/YY');
+    expect(await screen.findByText(currentPeriod)).toBeInTheDocument();
   });
 
   it('renders month picker', async () => {

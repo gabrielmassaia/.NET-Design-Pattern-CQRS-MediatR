@@ -27,13 +27,11 @@ jobs:
 
       - name: Run unit tests with coverage
         run: dotnet test src/api/CleanArchReference.Tests/CleanArchReference.Tests.csproj
-          --no-build
           --collect:"XPlat Code Coverage"
           --settings coverlet.runsettings
 
       - name: Run integration tests
-        run: dotnet test src/api/CleanArchReference.IntegrationTests/CleanArchReference.IntegrationTests.csproj --no-build
-        continue-on-error: true
+        run: dotnet test src/api/CleanArchReference.IntegrationTests/CleanArchReference.IntegrationTests.csproj
 
   frontend:
     name: Frontend Tests
@@ -55,10 +53,6 @@ jobs:
 
       - name: Install
         run: npm ci
-
-      - name: Lint
-        run: npm run lint
-        continue-on-error: true
 
       - name: Run tests with coverage
         run: npm run test:coverage
